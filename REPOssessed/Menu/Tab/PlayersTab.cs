@@ -43,6 +43,14 @@ namespace REPOssessed.Menu.Tab
         {
             UI.Header("PlayersTab.GeneralActions");
 
+            UI.Button("PlayersTab.ReviveAll", () => {
+                GameObjectManager.players.Where(p => p != null && p.Handle().IsDead()).ToList().ForEach(p => p.Handle().RevivePlayer());
+            });
+
+            UI.Button("PlayersTab.ReviveOthers", () => {
+                GameObjectManager.players.Where(p => p != null && p.Handle().IsDead() && !p.Handle().IsLocalPlayer()).ToList().ForEach(p => p.Handle().RevivePlayer());
+            });
+
             UI.Button("PlayersTab.KillAll", () => {
                 GameObjectManager.players.Where(p => p != null).ToList().ForEach(p => p.PlayerDeath(-1));
             });
