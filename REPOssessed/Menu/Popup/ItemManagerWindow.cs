@@ -1,7 +1,6 @@
 ﻿using Photon.Pun;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -98,6 +97,6 @@ namespace REPOssessed.Menu.Popup
         }
 
         private string GetValuablePath() => ValuableDirector.instance.Reflect().GetValue<string>("resourcePath").Replace("/", "");
-        public string GetName(string name) => name.Replace("(Clone)", "").Replace("Valuable", "").Trim();
+        public string GetName(string name) => name.Replace("(Clone)", "").Replace("Valuable", "").Replace("Item", "").Trim();
     }
 }

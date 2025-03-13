@@ -17,7 +17,6 @@ namespace REPOssessed.Cheats
         {
             Settings.b_DisplayMapObjects = !Settings.b_DisplayMapObjects;
             Settings.b_DisplayDeathHeads = !Settings.b_DisplayDeathHeads;
-            Settings.b_DisplaySpectators = !Settings.b_DisplaySpectators;
         }
 
 
@@ -30,31 +29,8 @@ namespace REPOssessed.Cheats
 
             if (Settings.b_DisplayMapObjects) Format("Cheats.Info.DisplayMapObjects", GetMapObjectsCount(), GetMapObjectsValueCount());
             if (Settings.b_DisplayDeathHeads) Format("Cheats.Info.DisplayDeathHeads", GetDeathHeadsCount());
-            if (Settings.b_DisplaySpectators)
-            {
-                Format("Cheats.Info.DisplaySpectators", GetSpectatorCount());
-                Format("Cheats.Info.Spectators");
-                GetSpectators().ToList().ForEach(p => Format(p.Handle().GetName()));
-                Format("Cheats.Info.CurrentSpectators");
-                GetLocalPlayerSpectators().ToList().ForEach(p => Format(p.Handle().GetName()));
-            }
 
             VisualUtil.DrawString(new Vector2(Screen.width - 200, 10), info, Settings.c_primary, false, false, false, Settings.i_menuFontSize);
-        }
-
-        private List<PlayerAvatar> GetLocalPlayerSpectators()
-        {
-            return GameObjectManager.players.Where(p => p != null && p.Handle() != null && p.Handle().IsSpectating() && p.Handle().GetPlayerSpectating() == p.GetLocalPlayer()).ToList();
-        }
-
-        private List<PlayerAvatar> GetSpectators()
-        {
-            return GameObjectManager.players.Where(p => p != null && p.Handle() != null && p.Handle().IsSpectating()).ToList();
-        }
-
-        private int GetSpectatorCount()
-        {
-            return GameObjectManager.players.Where(p => p != null && p.Handle() != null && p.Handle().IsSpectating()).Count();
         }
 
         private float GetMapObjectsValueCount()

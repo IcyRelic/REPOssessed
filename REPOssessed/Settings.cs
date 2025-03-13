@@ -65,7 +65,6 @@ namespace REPOssessed
 
         public static bool b_DisplayMapObjects = false;
         public static bool b_DisplayDeathHeads = false;
-        public static bool b_DisplaySpectators = false;
 
         internal class Config
         {
@@ -244,8 +243,6 @@ namespace REPOssessed
                         b_DisplayMapObjects = bool.Parse(displayMapObjectsToken.ToString());
                     if (cheatSettings.TryGetValue("DisplayDeathHeads", out JToken displayDeathHeadsToken))
                         b_DisplayDeathHeads = bool.Parse(displayDeathHeadsToken.ToString());
-                    if (cheatSettings.TryGetValue("DisplaySpectators", out JToken displaySpectatorsToken))
-                        b_DisplaySpectators = bool.Parse(displaySpectatorsToken.ToString());
                 }
 
                     Debug.Log("Loading Colors...");

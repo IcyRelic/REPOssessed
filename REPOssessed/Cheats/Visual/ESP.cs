@@ -57,7 +57,7 @@ namespace REPOssessed.Cheats
         {
             DisplayObjects(
                 GameObjectManager.players?.Where(p => p != null && !p.Handle().IsLocalPlayer() && !p.Handle().IsDead()),
-                player => $"{player.Handle().GetName()}",
+                player => $"{(player.Handle().IsTalking() ? "[VC]" : "")} {player.Handle().GetName()} ( {player.Handle().GetHealth()}/{player.Handle().GetMaxHealth()} )",
                 player => Settings.c_espPlayers
             );
         }
@@ -75,7 +75,7 @@ namespace REPOssessed.Cheats
         {
             DisplayObjects(
                 GameObjectManager.enemies?.Where(e => e != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()),
-                enemy => $"{enemy.Handle().GetName()}",
+                enemy => $"{enemy.Handle().GetName()} ( {enemy.Handle().GetHealth()}/{enemy.Handle().GetMaxHealth()} )",
                 enemy => Settings.c_espEnemies
             );
         }

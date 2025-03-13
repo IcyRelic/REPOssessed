@@ -66,7 +66,6 @@
   "PlayersTab.SteamId": "Steam Id:",
   "PlayersTab.Status": "Status:",
   "PlayersTab.Health": "Health:",
-  "PlayersTab.IsSpectating": "Is Spectating:",
   "PlayersTab.IsMasterClient": "Is Master Client:",
   "PlayersTab.REPOssessedUser": "REPOssessed User",
   "PlayersTab.HealthUpgrade": "Health Upgrade:",
@@ -126,7 +125,6 @@
   "ServerTab.ServerCheats": "Server Cheats",
   "ServerTab.InfoDisplay": "Info Display",
   "ServerTab.ToggleInfoDisplay": "Toggle Info Display",
-  "ServerTab.DisplaySpectators": "Display Spectators",
   "ServerTab.DisplayMapObjects": "Display Map Objects",
   "ServerTab.DisplayDeathHeads": "Display Death Heads",
   "ServerTab.ToggleAllInfoDisplays": "Toggle All Info Displays",
@@ -143,8 +141,5 @@
   "ItemManager.Title": "Item Manager",
   "ItemManager.Amount": "Amount:",
   "Cheats.Info.DisplayMapObjects": "Map Objects: {0} ( {1} )",
-  "Cheats.Info.DisplayDeathHeads": "Death Heads: {0}",
-  "Cheats.Info.DisplaySpectators": "Spectators: {0}",
-  "Cheats.Info.Spectators": "All Spectators:",
-  "Cheats.Info.CurrentSpectators": "Current Spectators:"
+  "Cheats.Info.DisplayDeathHeads": "Death Heads: {0}"
 }

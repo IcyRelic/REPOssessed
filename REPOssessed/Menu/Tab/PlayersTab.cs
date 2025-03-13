@@ -80,8 +80,7 @@ namespace REPOssessed.Menu.Tab
             UI.Label("PlayersTab.Status", selectedPlayer.Handle().IsDead() ? "Dead" : "Alive");
             UI.Label("PlayersTab.Health", selectedPlayer.Handle().GetHealth().ToString());
             UI.Label("PlayersTab.HoldingItem", PhysGrabObject);
-            UI.Label("PlayersTab.IsMasterClient", selectedPlayer.Handle().IsLocalPlayer() ? SemiFunc.IsMasterClientOrSingleplayer().ToString() : selectedPlayer.Handle().PhotonPlayer().IsMasterClient.ToString());
-            UI.Label("PlayersTab.IsSpectating", selectedPlayer.Handle().IsSpectating().ToString());
+            UI.Label("PlayersTab.IsMasterClient", selectedPlayer.Handle().IsMasterClient().ToString());
             UI.Label("PlayersTab.REPOssessedUser", selectedPlayer.Handle().IsREPOssessedUser().ToString());
 
             UI.Label("PlayersTab.HealthUpgrade", StatsManager.instance.playerUpgradeHealth[selectedPlayer.Handle().GetSteamID()].ToString());

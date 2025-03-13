@@ -159,16 +159,11 @@ namespace REPOssessed.Menu.Tab
 
         private List<EnemySetup> GetEnemies()
         {
-            HashSet<EnemySetup> enemies = new HashSet<EnemySetup>();
-            List<EnemyParent> enemiesDifficulty1 = EnemyDirector.instance.enemiesDifficulty1.Where(o => o != null && o.GetEnemyParent() != null).Select(o => o.GetEnemyParent()).ToList();
-            List<EnemyParent> enemiesDifficulty2 = EnemyDirector.instance.enemiesDifficulty2.Where(o => o != null && o.GetEnemyParent() != null).Select(o => o.GetEnemyParent()).ToList();
-            List<EnemyParent> enemiesDifficulty3 = EnemyDirector.instance.enemiesDifficulty3.Where(o => o != null && o.GetEnemyParent() != null).Select(o => o.GetEnemyParent()).ToList();
-            enemiesDifficulty1.Concat(enemiesDifficulty2).Concat(enemiesDifficulty3).Where(ep => !enemies.Any(e => e.GetEnemyParent()?.enemyName == ep.enemyName)).ToList().ForEach(ep =>
-            {
-                EnemySetup EnemySetup = EnemyDirector.instance.enemiesDifficulty1.FirstOrDefault(o => o.GetEnemyParent() == ep) ?? EnemyDirector.instance.enemiesDifficulty2.FirstOrDefault(o => o.GetEnemyParent() == ep) ?? EnemyDirector.instance.enemiesDifficulty3.FirstOrDefault(o => o.GetEnemyParent() == ep);
-                if (EnemySetup != null) enemies.Add(EnemySetup);
-            });
-            return enemies.ToList();
+            List<EnemySetup> enemies = new List<EnemySetup>();
+            enemies.AddRange(EnemyDirector.instance.enemiesDifficulty1);
+            enemies.AddRange(EnemyDirector.instance.enemiesDifficulty2);
+            enemies.AddRange(EnemyDirector.instance.enemiesDifficulty3);
+            return enemies.Where(e => !e.name.Contains("Enemy Group")).ToList();
         }
 
         private void SpawnEnemy(EnemySetup enemy, int amount)

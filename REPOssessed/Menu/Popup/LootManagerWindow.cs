@@ -2,6 +2,7 @@
 using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ namespace REPOssessed.Menu.Popup
                 UI.Button("LootManager.TeleportAllItems", () => TeleportAll());
                 GUILayout.EndHorizontal();
                 GUILayout.Space(20);
-                UI.ButtonGrid(GameObjectManager.items.Where(i => i != null && i.Handle() != null && !i.Handle().IsCart() && i.Handle().IsValuable() || i.Handle().IsShopItem()).GroupBy(i => i.Handle().GetName()).Select(g => g.First()).ToList(), i => $"{i.Handle().GetName()} {GameObjectManager.items.Count(ii => ii != null && ii.Handle() != null && ii.Handle().GetName() == i?.Handle()?.GetName())}x", s_search, i => i?.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation), 3);
+                UI.ButtonGrid(GameObjectManager.items.Where(i => i != null && i.Handle() != null && !i.Handle().IsCart() && i.Handle().IsValuable() || i.Handle().IsShopItem()).GroupBy(i => i.Handle().GetName(), StringComparer.OrdinalIgnoreCase).Select(g => new { Item = g.First(), Count = g.Count() }).OrderBy(x => x.Item.Handle().GetName(), StringComparer.OrdinalIgnoreCase).ToList(), x => $"{x.Item.Handle().GetName()} {x.Count}x", s_search, x => x.Item?.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation), 3);
             });
             GUI.DragWindow();
         }

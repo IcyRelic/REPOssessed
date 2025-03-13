@@ -1,7 +1,6 @@
 ﻿using REPOssessed.Cheats;
 using REPOssessed.Cheats.Core;
 using REPOssessed.Handler;
-using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
 using System.Linq;
@@ -33,7 +32,8 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos, () =>
             {
                 UI.Header("ServerTab.ServerCheats");
-                UI.Button("ServerTab.TeleportToTruck", () => TeleportToTruck()); // broken
+                UI.Button("ServerTab.TeleportToTruck", () => TeleportToTruck()); // test if it works as non host
+                // maybe move to player tab and add extractions points or other players and test it if works for other players if so add teleport to me and teleport enemy to player and player to enemy
             });
         }
 
@@ -46,7 +46,6 @@ namespace REPOssessed.Menu.Tab
                 UI.Button("ServerTab.ToggleAllInfoDisplays", InfoDisplay.ToggleAll);
                 UI.Checkbox("ServerTab.DisplayMapObjects", ref Settings.b_DisplayMapObjects);
                 UI.Checkbox("ServerTab.DisplayDeathHeads", ref Settings.b_DisplayDeathHeads);
-                UI.Checkbox("ServerTab.DisplaySpectators", ref Settings.b_DisplaySpectators);
             });
         }
 
@@ -66,7 +65,7 @@ namespace REPOssessed.Menu.Tab
             if (player == null) return;
             SpawnPoint spawnPoint = Object.FindObjectsOfType<SpawnPoint>().ToList().FirstOrDefault(s => s != null);
             if (spawnPoint == null || spawnPoint.transform == null) return;
-            player.transform.transform.position = spawnPoint.transform.position;
+            player.Handle().Teleport(spawnPoint.transform.position, spawnPoint.transform.rotation);
         }
     }
 }

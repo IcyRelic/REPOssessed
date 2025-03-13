@@ -10,6 +10,7 @@ using System.Linq;
 using System.Numerics;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Quaternion = UnityEngine.Quaternion;
 using Vector3 = UnityEngine.Vector3;
 
 namespace REPOssessed.Handler
@@ -149,14 +150,20 @@ namespace REPOssessed.Handler
         public string GetSteamID() => player.Reflect().GetValue<string>("steamID");
         public bool IsLocalPlayer() => player.Reflect().GetValue<bool>("isLocal");
         public int GetHealth() => player.playerHealth.Reflect().GetValue<int>("health");
+        public int GetMaxHealth() => player.playerHealth.Reflect().GetValue<int>("maxHealth");
         public bool IsDead() => player.Reflect().GetValue<bool>("deadSet");
-        public bool IsSpectating() => player.spectateCamera.GetComponentHierarchy<SpectateCamera>().CheckState(SpectateCamera.State.Normal);
-        public PlayerAvatar GetPlayerSpectating() => player.spectateCamera.GetComponentHierarchy<SpectateCamera>().Reflect().GetValue<PlayerAvatar>("player");
         public void RevivePlayer()
         {
             if (player.Handle().IsDead()) player.Revive();
         }
-
+        public bool IsMasterClient()
+        {
+            if (player.Handle().IsLocalPlayer()) return SemiFunc.IsMasterClientOrSingleplayer();
+            return photonPlayer.IsMasterClient;
+        }
+        public void Teleport(Vector3 position, Quaternion rotation) => player.Reflect().Invoke("SpawnRPC", position, rotation);
+        public bool IsTalking() => GetPlayerVoiceChat != null && GetPlayerVoiceChat().Reflect().GetValue<bool>("isTalking");
+        public PlayerVoiceChat GetPlayerVoiceChat() => player.Reflect().GetValue<PlayerVoiceChat>("voiceChat");
         public string GetName() => string.IsNullOrEmpty(player.Reflect().GetValue<string>("playerName")) ? player.name : player.Reflect().GetValue<string>("playerName");
     }
 

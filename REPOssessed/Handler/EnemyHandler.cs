@@ -13,9 +13,9 @@ namespace REPOssessed.Handler
             this.enemy = enemy;
         }
 
-        public void Heal(int heal) => GetHealth()?.Reflect().Invoke("Hurt", -heal, new Vector3(0, 0, 0));
-        public void Hurt(int damage) => GetHealth()?.Reflect().Invoke("Hurt", damage, new Vector3(0, 0, 0));
-        public void Kill() => GetHealth()?.Reflect().Invoke("Death", new Vector3(0, 0, 0));
+        public void Heal(int heal) => GetEnemyHealth()?.Reflect().Invoke("Hurt", -heal, new Vector3(0, 0, 0));
+        public void Hurt(int damage) => GetEnemyHealth()?.Reflect().Invoke("Hurt", damage, new Vector3(0, 0, 0));
+        public void Kill() => GetEnemyHealth()?.Reflect().Invoke("Death", new Vector3(0, 0, 0));
         public void Lure(PlayerAvatar player)
         {
             if (player == null) return;
@@ -23,9 +23,11 @@ namespace REPOssessed.Handler
         }
 
         public bool IsDisabled() => !GetEnemyParent().EnableObject.activeSelf || !GetEnemyParent().Reflect().GetValue<bool>("Spawned");
-        public bool IsDead() => GetHealth().Reflect().GetValue<bool>("dead");
+        public bool IsDead() => GetEnemyHealth().Reflect().GetValue<bool>("dead");
         public string GetName() => GetEnemyParent().enemyName;
-        public EnemyHealth GetHealth() => enemy.GetComponent<EnemyHealth>();
+        public int GetHealth() => GetEnemyHealth().Reflect().GetValue<int>("healthCurrent");
+        public int GetMaxHealth() => GetEnemyHealth().health;
+        public EnemyHealth GetEnemyHealth() => enemy.GetComponent<EnemyHealth>();
         public EnemyParent GetEnemyParent() => enemy.GetComponentInParent<EnemyParent>();
     }
 
