@@ -19,12 +19,6 @@ namespace REPOssessed.Menu.Popup
         {
             UI.VerticalSpace(ref scrollPos, () =>
             {
-                if (!SemiFunc.IsMasterClientOrSingleplayer())
-                {
-                    UI.Label("General.HostRequired", Settings.c_error);
-                    return;
-                }
-
                 GUILayout.BeginHorizontal();
                 UI.Textbox("General.Search", ref s_search);
                 UI.Button("LootManager.TeleportAllItems", () => TeleportAll());

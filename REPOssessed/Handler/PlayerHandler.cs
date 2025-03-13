@@ -162,7 +162,7 @@ namespace REPOssessed.Handler
             return photonPlayer.IsMasterClient;
         }
         public void Teleport(Vector3 position, Quaternion rotation) => player.Reflect().Invoke("SpawnRPC", position, rotation);
-        public bool IsTalking() => GetPlayerVoiceChat != null && GetPlayerVoiceChat().Reflect().GetValue<bool>("isTalking");
+        public bool IsTalking() => GetPlayerVoiceChat() != null && GetPlayerVoiceChat().Reflect().GetValue<bool>("isTalking");
         public PlayerVoiceChat GetPlayerVoiceChat() => player.Reflect().GetValue<PlayerVoiceChat>("voiceChat");
         public string GetName() => string.IsNullOrEmpty(player.Reflect().GetValue<string>("playerName")) ? player.name : player.Reflect().GetValue<string>("playerName");
     }

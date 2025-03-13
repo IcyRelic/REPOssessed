@@ -56,7 +56,7 @@ namespace REPOssessed.Cheats
         private void DisplayPlayers()
         {
             DisplayObjects(
-                GameObjectManager.players?.Where(p => p != null && !p.Handle().IsLocalPlayer() && !p.Handle().IsDead()),
+                GameObjectManager.players?.Where(p => p != null && p.Handle() != null && !p.Handle().IsLocalPlayer() && !p.Handle().IsDead()),
                 player => $"{(player.Handle().IsTalking() ? "[VC]" : "")} {player.Handle().GetName()} ( {player.Handle().GetHealth()}/{player.Handle().GetMaxHealth()} )",
                 player => Settings.c_espPlayers
             );
