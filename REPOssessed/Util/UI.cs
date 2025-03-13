@@ -340,11 +340,11 @@ namespace REPOssessed.Util
 
         public static void VerticalSpace(ref Vector2 ScrollPosition, Action action, params GUILayoutOption[] options)
         {
-            ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
             GUILayout.BeginVertical(options);
+            ScrollPosition = GUILayout.BeginScrollView(ScrollPosition);
             action.Invoke();
-            GUILayout.EndVertical();
             GUILayout.EndScrollView();
+            GUILayout.EndVertical();
         }
 
         public static void ButtonGrid<T>(List<T> objects, Func<T, string> textSelector, string search, Action<T> action, int numPerRow, int btnWidth = 175)

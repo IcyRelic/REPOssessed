@@ -17,11 +17,8 @@ namespace REPOssessed.Menu.Tab
 
         public override void Draw()
         {
-            GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
             ServerMenuContent();
-            GUILayout.EndVertical();
-
-            GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
+            GUILayout.BeginVertical();
             ManagersContent();
             InfoMenuContent();
             GUILayout.EndVertical();
@@ -32,9 +29,8 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos, () =>
             {
                 UI.Header("ServerTab.ServerCheats");
-                UI.Button("ServerTab.TeleportToTruck", () => TeleportToTruck()); // test if it works as non host
-                // maybe move to player tab and add extractions points or other players and test it if works for other players if so add teleport to me and teleport enemy to player and player to enemy
-            });
+                
+            }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
 
         private void InfoMenuContent()
@@ -46,7 +42,7 @@ namespace REPOssessed.Menu.Tab
                 UI.Button("ServerTab.ToggleAllInfoDisplays", InfoDisplay.ToggleAll);
                 UI.Checkbox("ServerTab.DisplayMapObjects", ref Settings.b_DisplayMapObjects);
                 UI.Checkbox("ServerTab.DisplayDeathHeads", ref Settings.b_DisplayDeathHeads);
-            });
+            }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
 
         private void ManagersContent()
@@ -56,16 +52,7 @@ namespace REPOssessed.Menu.Tab
                 UI.Header("ServerTab.Managers");
                 UI.Toggle("LootManager.Title", ref HackMenu.Instance.LootManagerWindow.isOpen, "General.Open", "General.Close");
                 UI.Toggle("ItemManager.Title", ref HackMenu.Instance.ItemManagerWindow.isOpen, "General.Open", "General.Close");
-            });
-        }
-
-        private void TeleportToTruck()
-        {
-            PlayerAvatar player = PlayerAvatar.instance.GetLocalPlayer();
-            if (player == null) return;
-            SpawnPoint spawnPoint = Object.FindObjectsOfType<SpawnPoint>().ToList().FirstOrDefault(s => s != null);
-            if (spawnPoint == null || spawnPoint.transform == null) return;
-            player.Handle().Teleport(spawnPoint.transform.position, spawnPoint.transform.rotation);
+            }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
     }
 }

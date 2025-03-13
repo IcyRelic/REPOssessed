@@ -109,7 +109,7 @@ namespace REPOssessed.Menu.Tab
         private void EnemyActions()
         {
             Enemy enemy = GetSelectedEnemy();
-            if (enemy == null || enemy.Handle() == null) return;
+            if (enemy == null || enemy.Handle() == null || enemy.Handle().GetEnemyHealth()) return;
 
             PlayerAvatar selectedPlayer = PlayersTab.selectedPlayer;
 
@@ -117,7 +117,7 @@ namespace REPOssessed.Menu.Tab
 
             UI.Header("EnemyTab.MonsterActions");
 
-            UI.Label("EnemyTab.SelectedPlayer", Settings.c_primary.AsString(s_target));
+            UI.Label("EnemyTab.SelectedPlayer", s_target);
             UI.Button("EnemyTab.Kill", () => enemy.Handle().Kill());
             UI.Button("EnemyTab.Lure", () => enemy.Handle().Lure(selectedPlayer));
 

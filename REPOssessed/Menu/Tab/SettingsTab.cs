@@ -1,13 +1,12 @@
-﻿using UnityEngine;
+﻿using REPOssessed.Cheats;
+using REPOssessed.Cheats.Core;
+using REPOssessed.Language;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
-using REPOssessed.Language;
-using System.Linq;
 using System;
 using System.Collections.Generic;
-using UnityEngine.InputSystem.Controls;
-using REPOssessed.Cheats.Core;
-using REPOssessed.Cheats;
+using System.Linq;
+using UnityEngine;
 
 namespace REPOssessed.Menu.Tab
 {
@@ -20,24 +19,17 @@ namespace REPOssessed.Menu.Tab
 
         private int i_languageIndex = -1;
         private int i_themeIndex = -1;
-        private float f_leftWidth;
 
         private string s_kbSearch = "";
 
 
         public override void Draw()
         {
-            f_leftWidth = HackMenu.Instance.contentWidth * 0.55f - HackMenu.Instance.spaceFromLeft;
-
             if (i_languageIndex == -1) i_languageIndex = Array.IndexOf(LanguageUtil.GetLanguages(), LanguageUtil.Language.Name);
             if (i_themeIndex == -1) i_themeIndex = Array.IndexOf(ThemeUtil.GetThemes(), ThemeUtil.name);
 
-            GUILayout.BeginVertical(GUILayout.Width(f_leftWidth));
             MenuContent();
-            GUILayout.EndVertical();
-            GUILayout.BeginVertical(GUILayout.Width(HackMenu.Instance.contentWidth * 0.45f - HackMenu.Instance.spaceFromLeft));
             KeybindContent();
-            GUILayout.EndVertical();
         }
 
         private void MenuContent()
@@ -63,7 +55,7 @@ namespace REPOssessed.Menu.Tab
 
                 UI.Checkbox("SettingsTab.FPSCounter", Cheat.Instance<FPSCounter>());
                 UI.Toggle("SettingsTab.DebugMode", ref Settings.b_DebugMode, "General.Enable", "General.Disable", HackMenu.Instance.ToggleDebugTab);
-            });
+            }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.55f - HackMenu.Instance.spaceFromLeft));
         }
 
         private void KeybindContent()
@@ -71,37 +63,24 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos2, () =>
             {
                 UI.Header("SettingsTab.Keybinds");
-                GUILayout.BeginVertical();
-
                 UI.Textbox("SettingsTab.Search", ref s_kbSearch, big: false);
-
                 List<Cheat> cheats = Cheat.instances.FindAll(c => !c.Hidden);
                 foreach (Cheat cheat in cheats)
                 {
                     if (!cheat.GetType().Name.ToLower().Contains(s_kbSearch.ToLower())) continue;
-
                     GUILayout.BeginHorizontal();
-
-                    KeyCode bind = cheat.keybind;
-
-                    string kb = cheat.HasKeybind ? bind.ToString() : "General.None".Localize();
-
-                    GUILayout.Label(cheat.GetType().Name);
+                    UI.Label(cheat.GetType().Name);
                     GUILayout.FlexibleSpace();
-
                     if (cheat.HasKeybind && GUILayout.Button("-")) cheat.keybind = KeyCode.None;
-
-                    string btnText = cheat.WaitingForKeybind ? "General.Waiting" : kb;
+                    string btnText = cheat.WaitingForKeybind ? "General.Waiting" : cheat.HasKeybind ? cheat.keybind.ToString() : "General.None".Localize();
                     if (GUILayout.Button(btnText, GUILayout.Width(85)))
                     {
                         GUI.FocusControl(null);
                         KBUtil.BeginChangeKeybind(cheat);
                     }
-
                     GUILayout.EndHorizontal();
                 }
-                GUILayout.EndVertical();
-            });
+            }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.45f - HackMenu.Instance.spaceFromLeft));
         }
     }
 }
