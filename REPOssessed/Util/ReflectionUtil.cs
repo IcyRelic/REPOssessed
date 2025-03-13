@@ -65,7 +65,6 @@ namespace REPOssessed.Util
         public object GetValue(string fieldName, bool isStatic = false, bool isProperty = false) => this.GetValue<R>(fieldName, isStatic, isProperty);
         public ReflectionUtil<R> Invoke(string methodName, bool isStatic = false, params object[] args) => this.Invoke<R>(methodName, isStatic, args)?.Reflect();
         public ReflectionUtil<R> Invoke(string methodName, params object[] args) => this.Invoke<R>(methodName, args: args)?.Reflect();
-        public ReflectionUtil<R> InvokeCustom(string methodName, BindingFlags flags, params object[] args) => this.Invoke<R>(methodName, flags, args)?.Reflect();
     }
 
     public static class ReflectorExtensions

@@ -62,16 +62,16 @@ namespace REPOssessed.Menu.Tab
             {
                 case 0:
                     if (!GameObjectManager.enemies.Exists(e => e.GetInstanceID() == selectedEnemy)) selectedEnemy = -1;
-                    DrawList<Enemy>("EnemyTab.EnemyList", GameObjectManager.enemies.OrderBy(e => e.Handle().GetName()).ToList(), e => e.Handle().IsDead() && e.Handle().IsDisabled(), e => e.Handle().GetName(), ref scrollPos, ref selectedEnemy);
+                    DrawList<Enemy>("EnemyTab.EnemyList", GameObjectManager.enemies.Where(e => !e.Handle().IsDead() && !e.Handle().IsDisabled()).OrderBy(e => e.Handle().GetName()).ToList(), e => e.Handle().GetName(), ref scrollPos, ref selectedEnemy);
                     break;
                 case 1:
                     if (!GetEnemies().Exists(e => e.GetInstanceID() == selectedEnemySetup)) selectedEnemySetup = -1;
-                    DrawList<EnemySetup>("EnemyTab.EnemyType", GetEnemies().OrderBy(e => e.GetName()).ToList(), _ => false, e => e.GetName(), ref scrollPos3, ref selectedEnemySetup);
+                    DrawList<EnemySetup>("EnemyTab.EnemyType", GetEnemies().OrderBy(e => e.GetName()).ToList(), e => e.GetName(), ref scrollPos3, ref selectedEnemySetup);
                    break;
             }
         }
 
-        private void DrawList<T>(string title, IEnumerable<T> objects, Func<T, bool> conditional, Func<T, string> label, ref Vector2 scroll, ref int instanceID) where T : Object
+        private void DrawList<T>(string title, IEnumerable<T> objects, Func<T, string> label, ref Vector2 scroll, ref int instanceID) where T : Object
         {
             float width = HackMenu.Instance.contentWidth * 0.3f - HackMenu.Instance.spaceFromLeft * 2;
             float height = HackMenu.Instance.contentHeight - 45;
@@ -85,8 +85,6 @@ namespace REPOssessed.Menu.Tab
 
             foreach (T item in objects)
             {
-                if (conditional(item)) continue;
-
                 if (instanceID == -1) instanceID = item.GetInstanceID();
 
                 if (instanceID == item.GetInstanceID()) GUI.contentColor = Settings.c_espEnemies.GetColor();
@@ -142,13 +140,13 @@ namespace REPOssessed.Menu.Tab
 
             if (!SemiFunc.IsMasterClientOrSingleplayer())
             {
-                UI.Label("General.HostRequired", Settings.c_menuText);
+                UI.Label("General.HostRequired", Settings.c_error);
                 return;
             }
 
             UI.Header("EnemyTab.EnemySpawnerContent");
 
-            UI.Label("EnemyTab.SelectedEnemy", enemySetup.GetName(), Settings.c_menuText);
+            UI.Label("EnemyTab.SelectedEnemy", enemySetup.GetName());
             UI.Textbox("EnemyTab.SpawnAmount", ref s_spawnAmount, @"[^0-9]");
 
             UI.Button("EnemyTab.Spawn", () => SpawnEnemy(enemySetup, int.Parse(s_spawnAmount)));
@@ -180,7 +178,7 @@ namespace REPOssessed.Menu.Tab
             if (roomVolume?.transform == null) return;
             LevelPoint levelPoint = LevelGenerator.Instance.LevelPathPoints.OrderByDescending(p => Vector3.Distance(p.transform.position, roomVolume.transform.position)).FirstOrDefault();
             if (levelPoint?.transform == null) return;
-            for (int i = 0; i < amount; i++) LevelGenerator.Instance.Reflect().InvokeCustom("EnemySpawn", BindingFlags.Instance | BindingFlags.NonPublic, enemy, levelPoint.transform.position);
+            for (int i = 0; i < amount; i++) LevelGenerator.Instance.Reflect().Invoke("EnemySpawn", false, enemy, levelPoint.transform.position);
         }
     }
 }

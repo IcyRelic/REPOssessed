@@ -39,12 +39,13 @@ namespace REPOssessed
         public static bool b_DebugMode = false;
         public static string s_DebugMessage = "";
         public static float f_inputMovementSpeed = 10f;
-        public static bool b_FPSCounter = false;
 
         /* *    
          * Color Settings
          * */
         public static RGBAColor c_primary = new RGBAColor(165, 55, 253, 1f);
+        public static RGBAColor c_success = new RGBAColor(0, 255, 0, 1f);
+        public static RGBAColor c_error = new RGBAColor(255, 0, 0, 1f);
         public static RGBAColor c_menuText = new RGBAColor(255, 255, 255, 1f);
         public static RGBAColor c_espPlayers = new RGBAColor(0, 255, 0, 1f);
         public static RGBAColor c_espItems = new RGBAColor(255, 255, 255, 1f);
@@ -114,8 +115,6 @@ namespace REPOssessed
                 JObject settings = new JObject();
                 JObject colors = new JObject();
                 JObject cheatSettings = new JObject();
-                JObject reactions = new JObject();
-
 
 
                 colors["MenuText"] = JsonConvert.SerializeObject(c_menuText);
@@ -135,7 +134,6 @@ namespace REPOssessed
 
                 cheatSettings["DebugMode"] = b_DebugMode.ToString();
                 cheatSettings["IsFirstLaunch"] = b_IsFirstLaunch.ToString();
-                cheatSettings["FPSCounter"] = b_FPSCounter.ToString();
                 cheatSettings["PlayerESP"] = b_PlayerESP.ToString();
                 cheatSettings["EnemyESP"] = b_EnemyESP.ToString();
                 cheatSettings["ItemESP"] = b_ItemESP.ToString();
@@ -153,7 +151,6 @@ namespace REPOssessed
                 json["CheatSettings"] = cheatSettings;
                 json["Colors"] = colors;
                 json["MenuSettings"] = settings;
-                json["Reactions"] = reactions;
 
                 File.WriteAllText(conf, json.ToString());
             }
@@ -229,8 +226,6 @@ namespace REPOssessed
 
                     if (cheatSettings.TryGetValue("IsFirstLaunch", out JToken isFirstLaunchToken))
                         b_IsFirstLaunch = bool.Parse(isFirstLaunchToken.ToString());
-                    if (cheatSettings.TryGetValue("FPSCounter", out JToken fPSCounterToken))
-                        b_FPSCounter = bool.Parse(fPSCounterToken.ToString());
                     if (cheatSettings.TryGetValue("PlayerESP", out JToken playerESPToken))
                         b_PlayerESP = bool.Parse(playerESPToken.ToString());
                     if (cheatSettings.TryGetValue("EnemyESP", out JToken enemyESPToken))
@@ -291,14 +286,6 @@ namespace REPOssessed
                         i_textboxWidth = int.Parse(textboxWidthToken.ToString());
                     if (settings.TryGetValue("MenuAlpha", out JToken menuAlphaToken))
                         f_menuAlpha = float.Parse(menuAlphaToken.ToString());
-                }
-
-                Debug.Log("Loading Reaction Settings...");
-                if (json.TryGetValue("Reactions", out JToken reactionsToken))
-                {
-                    JObject reactions = reactionsToken.ToObject<JObject>();
-
-                    
                 }
             }
 

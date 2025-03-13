@@ -72,14 +72,14 @@ namespace REPOssessed.Menu.Tab
         {
             if (selectedPlayer == null || selectedPlayer.Handle() == null) return;
 
-            string PhysGrabObject = selectedPlayer.Handle().GetHeldPhysGrabObject() == null ? "General.None".Localize() : selectedPlayer.Handle().GetHeldPhysGrabObject().name;
+            string PhysGrabObject = selectedPlayer.Handle().GetHeldPhysGrabObject() == null ? "General.None".Localize() : selectedPlayer.Handle().GetHeldPhysGrabObject().Handle().GetName();
 
             UI.Header("PlayersTab.PlayerActions");
 
             UI.Label("PlayersTab.SteamId", selectedPlayer.Handle().GetSteamID().ToString());
             UI.Label("PlayersTab.Status", selectedPlayer.Handle().IsDead() ? "Dead" : "Alive");
             UI.Label("PlayersTab.Health", selectedPlayer.Handle().GetHealth().ToString());
-            UI.Label("PlayersTab.HeldPhysGrabObject", PhysGrabObject);
+            UI.Label("PlayersTab.HoldingItem", PhysGrabObject);
             UI.Label("PlayersTab.IsMasterClient", selectedPlayer.Handle().IsLocalPlayer() ? SemiFunc.IsMasterClientOrSingleplayer().ToString() : selectedPlayer.Handle().PhotonPlayer().IsMasterClient.ToString());
             UI.Label("PlayersTab.IsSpectating", selectedPlayer.Handle().IsSpectating().ToString());
             UI.Label("PlayersTab.REPOssessedUser", selectedPlayer.Handle().IsREPOssessedUser().ToString());

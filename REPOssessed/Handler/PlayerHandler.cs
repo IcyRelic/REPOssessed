@@ -131,7 +131,7 @@ namespace REPOssessed.Handler
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Settings.s_DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
                 return true;
             }
         }

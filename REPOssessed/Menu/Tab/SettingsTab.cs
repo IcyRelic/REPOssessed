@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.InputSystem.Controls;
 using REPOssessed.Cheats.Core;
+using REPOssessed.Cheats;
 
 namespace REPOssessed.Menu.Tab
 {
@@ -60,7 +61,7 @@ namespace REPOssessed.Menu.Tab
                 UI.Select("SettingsTab.Theme", ref i_themeIndex, ThemeUtil.GetThemes().Select(x => new UIOption(x, () => ThemeUtil.SetTheme(x))).ToArray());
                 UI.Select("SettingsTab.Language", ref i_languageIndex, LanguageUtil.GetLanguages().Select(x => new UIOption(x, () => LanguageUtil.SetLanguage(x))).ToArray());
 
-                UI.Toggle("SettingsTab.FPSCounter", ref Settings.b_FPSCounter, "General.Enable", "General.Disable");
+                UI.Checkbox("SettingsTab.FPSCounter", Cheat.Instance<FPSCounter>());
                 UI.Toggle("SettingsTab.DebugMode", ref Settings.b_DebugMode, "General.Enable", "General.Disable", HackMenu.Instance.ToggleDebugTab);
             });
         }

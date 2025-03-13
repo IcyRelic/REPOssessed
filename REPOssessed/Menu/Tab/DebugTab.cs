@@ -46,21 +46,12 @@ namespace REPOssessed.Menu.Tab
 
                 UI.Button("Raycast", () =>
                 {
-                    string debugMessage = "";
-                    foreach (RaycastHit hit in SemiFunc.MainCamera().transform.SphereCastForward())
+                    foreach (RaycastHit hit in PlayerController.instance.cameraAim.transform.SphereCastForward())
                     {
                         Collider collider = hit.collider;
-                        debugMessage += $"Hit: {collider.name} => {collider.gameObject.name} => Layer {LayerMask.LayerToName(collider.gameObject.layer)} {collider.gameObject.layer}\n";
+                        Settings.s_DebugMessage += $"Hit: {collider.GetType().Name} => {collider.gameObject.GetType().Name} => Layer {LayerMask.LayerToName(collider.gameObject.layer)} {collider.gameObject.layer}\n";
                     }
-                    Debug.Log(debugMessage);
                 });
-
-                UI.Button("Test", () =>
-                {
-                    GameObjectManager.items.Where(i => i != null).ToList().ForEach(i => Debug.Log(i.Handle().GetName()));
-                });
-
-                UI.Button("Unload test", Loader.Unload);
             });
         }
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using REPOssessed.Util;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -50,6 +51,7 @@ namespace REPOssessed
         }
 
         private delegate bool TryParseDelegate<T>(string input, out T result);
-        
+
+        public static bool StateIs(this ExtractionPoint extraction, ExtractionPoint.State state) => extraction.Reflect().GetValue<ExtractionPoint.State>("currentState") == state;
     }
 }

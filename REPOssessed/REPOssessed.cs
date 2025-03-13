@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Photon.Pun;
+using REPOssessed.Cheats;
 using REPOssessed.Cheats.Core;
 using REPOssessed.Handler;
 using REPOssessed.Language;
@@ -21,7 +22,8 @@ namespace REPOssessed
         private List<ToggleCheat> cheats;
         private Harmony harmony;
         private HackMenu menu;
-        public int fps;
+
+        public bool IsIngame => !SemiFunc.IsMainMenu() && !SemiFunc.RunIsLobby();
 
         private static REPOssessed instance;
         public static REPOssessed Instance
@@ -42,7 +44,6 @@ namespace REPOssessed
             DoPatching();
             AlertUsingREPOssessed();
             GameObjectManager.CollectObjects();
-            this.StartCoroutine(this.FPSCounter());
         }
 
         private void DoPatching()
@@ -55,7 +56,7 @@ namespace REPOssessed
             }
             catch (Exception e)
             {
-                Debug.Log($"Error in DoPatching: {e}");
+                Settings.s_DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
             }
         }
 
@@ -81,7 +82,7 @@ namespace REPOssessed
             }
             catch (Exception e)
             {
-                Debug.Log($"Error in FixedUpdate: {e}");
+                Settings.s_DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
             }
         }
 
@@ -98,11 +99,11 @@ namespace REPOssessed
                         else Debug.LogError($"REPOssessed Cheat Type: {c.GetType().Name}");
                     });
                 }
-                if (!SemiFunc.IsMainMenu()) cheats.ForEach(cheat => cheat.Update());
+                if (IsIngame) cheats.ForEach(cheat => cheat.Update());
             }
             catch (Exception e)
             {
-                Debug.LogError($"Error in Update: {e}");
+                Settings.s_DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
             }
         }
 
@@ -113,7 +114,7 @@ namespace REPOssessed
                 if (Event.current.type == EventType.Repaint)
                 {
                     string REPOssessedTitle = $"REPOssessed {Settings.s_Version} By Dustin | Menu Toggle: {FirstSetupManagerWindow.GetMenuKeybindName()}";
-                    REPOssessedTitle += Settings.b_FPSCounter ? $" | FPS: {fps}" : "";
+                    REPOssessedTitle += Cheat.Instance<FPSCounter>().Enabled ? $" | FPS: {Cheat.Instance<FPSCounter>().FPS}" : "";
                     VisualUtil.DrawString(new Vector2(5f, 2f), REPOssessedTitle, Settings.c_primary.GetColor(), false, false, true, 14);
                     if (MenuUtil.resizing)
                     {
@@ -126,21 +127,12 @@ namespace REPOssessed
                         VisualUtil.DrawString(new Vector2(10f, 65f), new RGBAColor(255, 195, 0, 1f).AsString(Settings.s_DebugMessage), false, false, false, 22);
                     }
                 }
-                if (!SemiFunc.IsMainMenu()) cheats.ForEach(cheat => { if (cheat.Enabled) cheat.OnGui(); });
+                if (IsIngame) cheats.ForEach(cheat => { if (cheat.Enabled) cheat.OnGui(); });
                 menu.Draw();
             }
             catch (Exception e)
             {
-                Debug.Log($"Error in OnGUI: {e}");
-            }
-        }
-
-        public IEnumerator FPSCounter()
-        {
-            while (true)
-            {
-                fps = (int)(1.0f / Time.deltaTime);
-                yield return new WaitForSeconds(1f);
+                Settings.s_DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
             }
         }
 

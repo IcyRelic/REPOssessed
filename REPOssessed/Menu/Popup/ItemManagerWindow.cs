@@ -23,7 +23,7 @@ namespace REPOssessed.Menu.Popup
             {
                 if (!SemiFunc.IsMasterClientOrSingleplayer())
                 {
-                    UI.Label("General.HostRequired", Settings.c_menuText);
+                    UI.Label("General.HostRequired", Settings.c_error);
                     return;
                 }
 

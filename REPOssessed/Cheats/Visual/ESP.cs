@@ -13,14 +13,21 @@ namespace REPOssessed.Cheats
     {
         public override void OnGui()
         {
-            if (!Cheat.Instance<ESP>().Enabled) return;
-            if (Settings.b_PlayerESP) DisplayPlayers();
-            if (Settings.b_ItemESP) DisplayItems();
-            if (Settings.b_EnemyESP) DisplayEnemies();
-            if (Settings.b_CartESP) DisplayCarts();
-            if (Settings.b_ExtractionESP) DisplayExtractions();
-            if (Settings.b_DeathHeadESP) DisplayDeathHeads();
-            if (Settings.b_TruckESP) DisplayTruck();
+            try
+            {
+                if (!Cheat.Instance<ESP>().Enabled) return;
+                if (Settings.b_PlayerESP) DisplayPlayers();
+                if (Settings.b_ItemESP) DisplayItems();
+                if (Settings.b_EnemyESP) DisplayEnemies();
+                if (Settings.b_CartESP) DisplayCarts();
+                if (Settings.b_ExtractionESP) DisplayExtractions();
+                if (Settings.b_DeathHeadESP) DisplayDeathHeads();
+                if (Settings.b_TruckESP) DisplayTruck();
+            }
+            catch (Exception e)
+            {
+                Settings.s_DebugMessage = "Msg: " + e.Message + "\nSrc: " + e.Source + "\n" + e.StackTrace;
+            }
         }
 
         public static void ToggleAll()
@@ -85,7 +92,7 @@ namespace REPOssessed.Cheats
         private void DisplayExtractions()
         {
             DisplayObjects(
-                GameObjectManager.extractions?.Where(e => e != null && e.Reflect().GetValue<string>("tubeScreenTextString") == "READY" || e.roomVolume != null && e.roomVolume.activeSelf && !e.Reflect().GetValue<bool>("isShop")), 
+                GameObjectManager.extractions?.Where(e => e != null && !e.Reflect().GetValue<bool>("isShop") && !e.StateIs(ExtractionPoint.State.Complete)), 
                 extraction => "Extraction",
                 extraction => Settings.c_espExtractions
             );           
