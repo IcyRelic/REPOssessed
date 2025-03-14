@@ -7,24 +7,41 @@ namespace REPOssessed.Util
 {
     public class ThemeUtil
     {
-        public static string name { get; private set; }
-        public static GUISkin Skin { get; private set; }
-        public static AssetBundle AssetBundle;
-        public static void Initialize() => SetTheme(string.IsNullOrEmpty(name) ? "Default" : name);
-        public static void SetTheme(string t = "Default") => LoadTheme(name = ThemeExists(t) ? t : "Default");
-        private static bool ThemeExists(string t) => Assembly.GetExecutingAssembly().GetManifestResourceStream($"REPOssessed.Resources.Theme.{t}.skin") != null;
-        private static AssetBundle LoadAssetBundle(string r) => AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream(r));
-        public static string[] GetThemes() => Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(r => r.StartsWith("REPOssessed.Resources.Theme.") && r.EndsWith(".skin")).Select(r => r["REPOssessed.Resources.Theme.".Length..^".skin".Length]).OrderBy(name => name).ToArray();
-        private static void LoadTheme(string t)
+        public static string name { get; set; }
+        public static GUISkin Skin { get; set; }
+        public static AssetBundle AssetBundle { get; set; }
+        private static string Resource =>  $"{Assembly.GetExecutingAssembly().GetName().Name}.Resources.Theme.";
+
+        public static void Initialize() => SetTheme("Default");
+
+        private static bool ThemeExists(string theme) => Assembly.GetExecutingAssembly().GetManifestResourceStream($"{Resource}{theme}.skin") != null;
+
+        private static AssetBundle LoadAssetBundle(string theme) => AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream(theme));
+
+        public static string[] GetThemes() => Assembly.GetExecutingAssembly().GetManifestResourceNames().Where(r => r.StartsWith(Resource) && r.EndsWith(".skin")).Select(r => r.Replace(Resource, "").Replace(".skin", "")).OrderBy(n => n).ToArray();
+
+        public static void SetTheme(string theme)
         {
+            if (name == theme)
+            {
+                Debug.LogError($"[ERROR] Theme {theme} already loaded");
+                return;
+            }
+            name = ThemeExists(theme) ? theme : "Default";
             AssetBundle?.Unload(true);
-            AssetBundle = null;
-            Skin = null;
-            AssetBundle = LoadAssetBundle($"REPOssessed.Resources.Theme.{t}.skin");
-            if (AssetBundle == null) Debug.LogError($"[ERROR] Failed to load theme file => {$"REPOssessed.Resources.Theme.{t}.skin"}");
+            AssetBundle = LoadAssetBundle($"{Resource}{theme}.skin");
+            if (AssetBundle == null)
+            {
+                Debug.LogError($"[ERROR] Failed to load Theme {theme}");
+                return;
+            }
             Skin = AssetBundle.LoadAllAssets<GUISkin>().FirstOrDefault();
-            if (Skin == null) return;
-            Debug.Log($"Loaded Theme {t}");
+            if (Skin == null)
+            {
+                Debug.LogError($"[ERROR] Failed to load Theme {theme}");
+                return;
+            }
+            Debug.Log($"Loaded Theme {theme}");
         }
     }
 }

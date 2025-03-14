@@ -41,7 +41,7 @@ namespace REPOssessed.Menu.Tab
                 UI.Checkbox("SelfTab.RainbowMode", Cheat.Instance<SuitRainbowMode>());
                 UI.Checkbox("SelfTab.UseSpoofedName", Cheat.Instance<NameSpoofer>());
                 UI.Textbox("SelfTab.SpoofedName", ref NameSpoofer.Value, true, 100);
-                UI.Checkbox("SelfTab.NoObjectMoneyLoss", Cheat.Instance<NoObjectMoneyLoss>()); // needs redone
+                UI.Checkbox("SelfTab.NoObjectMoneyLoss", Cheat.Instance<NoObjectMoneyLoss>()); 
                 UI.CheatToggleSlider(Cheat.Instance<NoClip>(), "SelfTab.NoClip", NoClip.Value.ToString("#"), ref NoClip.Value, 1f, 20f);
                 UI.CheatToggleSlider(Cheat.Instance<SuperSpeed>(), "SelfTab.SuperSpeed", SuperSpeed.Value.ToString("#"), ref SuperSpeed.Value, 1f, 100f);
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));

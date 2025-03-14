@@ -9,7 +9,6 @@ using REPOssessed.Menu.Core;
 using REPOssessed.Menu.Popup;
 using REPOssessed.Util;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -23,7 +22,7 @@ namespace REPOssessed
         private Harmony harmony;
         private HackMenu menu;
 
-        public bool IsIngame => !SemiFunc.IsMainMenu() && !SemiFunc.RunIsLobby();
+        public bool IsIngame => !SemiFunc.IsMainMenu() && !SemiFunc.RunIsLobby() && !SemiFunc.RunIsLobbyMenu();
 
         private static REPOssessed instance;
         public static REPOssessed Instance
@@ -39,7 +38,7 @@ namespace REPOssessed
         {
             instance = this;
             LanguageUtil.Initialize();
-            ThemeUtil.SetTheme();
+            ThemeUtil.Initialize();
             LoadCheats();
             DoPatching();
             AlertUsingREPOssessed();

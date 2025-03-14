@@ -23,6 +23,13 @@ namespace REPOssessed.Menu.Popup
                 if (!SemiFunc.IsMasterClientOrSingleplayer())
                 {
                     UI.Label("General.HostRequired", Settings.c_error);
+                    GUI.DragWindow();
+                    return;
+                }
+                if (!REPOssessed.Instance.IsIngame)
+                {
+                    UI.Label("General.MustBeIngame", Settings.c_error);
+                    GUI.DragWindow();
                     return;
                 }
 

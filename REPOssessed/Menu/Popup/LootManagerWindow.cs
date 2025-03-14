@@ -17,6 +17,13 @@ namespace REPOssessed.Menu.Popup
 
         public override void DrawContent(int windowID)
         {
+            if (!REPOssessed.Instance.IsIngame)
+            {
+                UI.Label("General.MustBeIngame", Settings.c_error);
+                GUI.DragWindow();
+                return;
+            }
+
             UI.VerticalSpace(ref scrollPos, () =>
             {
                 GUILayout.BeginHorizontal();

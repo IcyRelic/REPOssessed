@@ -1,7 +1,9 @@
 ﻿using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using REPOssessed.Cheats;
 using REPOssessed.Cheats.Components;
+using REPOssessed.Cheats.Core;
 using REPOssessed.Manager;
 using REPOssessed.Util;
 using System;
@@ -108,7 +110,17 @@ namespace REPOssessed.Handler
 
                 if (!Patches.IgnoredRPCDebugs.Contains(rpc) && parameters != null) Debug.LogWarning($"RPC Params '{string.Join(", ", parameters.Select(p => p?.ToString() ?? "null"))}'");
 
-                if (player.Handle().GetSteamID() == player.GetLocalPlayer().Handle().GetSteamID()) return true;
+                if (rpc.Equals("BreakRPC") && player.Handle().IsLocalPlayer())
+                {
+                    PhysGrabObject physGrabObject = NoObjectMoneyLoss.GetPhysGrabObject((Vector3)parameters[1]);
+                    if (physGrabObject != null && !physGrabObject.Handle().IsEnemy())
+                    {
+                        NoObjectMoneyLoss.droppedPhysGrabObjects.Remove(physGrabObject);
+                        return false;
+                    }
+                }
+
+                if (player.Handle().IsLocalPlayer()) return true;
 
                 /*
                 if (rpc.Equals("OutroStartRPC"))

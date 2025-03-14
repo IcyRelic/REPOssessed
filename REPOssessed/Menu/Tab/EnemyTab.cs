@@ -109,7 +109,7 @@ namespace REPOssessed.Menu.Tab
         private void EnemyActions()
         {
             Enemy enemy = GetSelectedEnemy();
-            if (enemy == null || enemy.Handle() == null || enemy.Handle().GetEnemyHealth()) return;
+            if (enemy == null || enemy.Handle() == null || enemy.Handle().GetEnemyHealth() == null) return;
 
             PlayerAvatar selectedPlayer = PlayersTab.selectedPlayer;
 

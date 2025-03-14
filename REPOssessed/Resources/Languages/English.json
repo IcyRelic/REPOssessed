@@ -18,6 +18,7 @@
   "General.Waiting": "Waiting",
   "General.Search": "Search:",
   "General.Reset": "Reset",
+  "General.MustBeIngame": "You must be ingame to use this!",
   "GeneralTab.Title": "General",
   "SettingsTab.Title": "Settings",
   "SettingsTab.GeneralSettings": "General Settings",
