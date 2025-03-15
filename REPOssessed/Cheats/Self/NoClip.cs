@@ -6,6 +6,10 @@ namespace REPOssessed.Cheats
 {
     internal class NoClip : ToggleCheat, IVariableCheat<float>
     {
+        private bool OriginalFreezeRotation;
+        private bool OriginalUseGravity;
+        private bool OriginalIsKinematic;
+        private RigidbodyConstraints OriginalRigidbodyConstraints;
         private KBInput movement = null;
         public static float Value = 10f;
 
@@ -25,6 +29,18 @@ namespace REPOssessed.Cheats
             rb.isKinematic = true;
         }
 
+        public override void OnEnable()
+        {
+            PlayerController player = PlayerController.instance;
+            if (player == null) return;
+            Rigidbody rb = player.rb;
+            if (rb == null) return;
+            OriginalRigidbodyConstraints = rb.constraints;
+            OriginalFreezeRotation = rb.freezeRotation;
+            OriginalUseGravity = rb.useGravity;
+            OriginalIsKinematic = rb.isKinematic;
+        }
+
         public override void OnDisable()
         {
             Destroy(movement);
@@ -33,8 +49,10 @@ namespace REPOssessed.Cheats
             if (player == null) return;
             Rigidbody rb = player.rb;
             if (rb == null) return;
-            rb.useGravity = true;
-            rb.isKinematic = false;
+            rb.constraints = OriginalRigidbodyConstraints;
+            rb.freezeRotation = OriginalFreezeRotation;
+            rb.useGravity = OriginalUseGravity;
+            rb.isKinematic = OriginalIsKinematic;
         }
     }
 }
