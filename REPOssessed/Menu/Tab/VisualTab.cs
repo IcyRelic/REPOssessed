@@ -9,7 +9,7 @@ namespace REPOssessed.Menu.Tab
     internal class VisualTab : MenuTab
     {
         public VisualTab() : base("VisualTab.Title") { }
-        private Vector2 scrollPos = Vector2.zero; 
+        private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
 
         public override void Draw()
@@ -33,7 +33,7 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos2, () =>
             {
                 UI.Header("VisualTab.ESP");
-                UI.Checkbox("VisualTab.ToggleESP", Cheat.Instance<ESP>());
+                UI.CheatToggleSlider(Cheat.Instance<ESP>(), "VisualTab.ToggleESP", ESP.Value.ToString("#"), ref ESP.Value, 0f, 5000f);
                 UI.Button("VisualTab.ToggleAllESP", ESP.ToggleAll);
                 UI.Checkbox("VisualTab.PlayerESP", ref Settings.b_PlayerESP);
                 UI.Checkbox("VisualTab.EnemyESP", ref Settings.b_EnemyESP);

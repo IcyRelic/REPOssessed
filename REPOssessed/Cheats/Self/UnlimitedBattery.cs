@@ -9,8 +9,8 @@ namespace REPOssessed.Cheats
         {
             if (!Enabled) return;
             PlayerAvatar player = PlayerAvatar.instance.GetLocalPlayer();
-            if (player == null) return;
-            ItemEquippable itemEquippable = player.Handle().GetHeldItemEquippable();
+            if (player == null || player.Handle() == null) return;
+            ItemEquippable itemEquippable = player.Handle().itemEquippable;
             if (itemEquippable == null) return;
             ItemBattery itemBattery = itemEquippable.GetComponent<ItemBattery>();
             if (itemBattery == null) return;

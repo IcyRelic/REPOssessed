@@ -1,8 +1,7 @@
 ﻿using HarmonyLib;
 using REPOssessed.Cheats.Core;
+using REPOssessed.Handler;
 using REPOssessed.Util;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace REPOssessed.Cheats
@@ -10,22 +9,18 @@ namespace REPOssessed.Cheats
     [HarmonyPatch]
     internal class NoObjectMoneyLoss : ToggleCheat
     {
-        public static Dictionary<PhysGrabObject, Vector3> droppedPhysGrabObjects = new Dictionary<PhysGrabObject, Vector3>();
-
         [HarmonyPatch(typeof(PhysGrabObjectImpactDetector), "Break"), HarmonyPrefix]
         public static bool Break(PhysGrabObjectImpactDetector __instance, float valueLost, Vector3 _contactPoint, int breakLevel)
         {
-            if (Cheat.Instance<NoObjectMoneyLoss>().Enabled && !__instance.isEnemy)
+            if (Cheat.Instance<NoObjectMoneyLoss>().Enabled && __instance.isValuable && !__instance.isEnemy && SemiFunc.IsMasterClientOrSingleplayer())
             {
-                if (SemiFunc.IsMultiplayer()) droppedPhysGrabObjects.Add(__instance.Reflect().GetValue<PhysGrabObject>("physGrabObject"), _contactPoint);
-                else return false;
+                PhysGrabObject physGrabObject = __instance.Reflect().GetValue<PhysGrabObject>("physGrabObject");
+                if (physGrabObject?.Handle() == null) return true;
+                PlayerAvatar player = physGrabObject.Handle().GetLastPlayerHeld();
+                if (player == null || player.Handle() == null) return true;
+                if (player.GetLocalPlayer().Handle().physGrabObject == physGrabObject) return false;
             }
             return true;
-        }
-
-        public static PhysGrabObject GetPhysGrabObject(Vector3 position)
-        {
-            return droppedPhysGrabObjects.FirstOrDefault(x => x.Value == position).Key;
         }
     }
 }

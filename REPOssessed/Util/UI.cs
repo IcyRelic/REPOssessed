@@ -1,5 +1,6 @@
 ﻿using REPOssessed.Cheats;
 using REPOssessed.Cheats.Core;
+using REPOssessed.Extensions;
 using REPOssessed.Language;
 using System;
 using System.Collections.Generic;

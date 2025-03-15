@@ -1,28 +1,35 @@
-﻿using Photon.Pun;
-using Steamworks;
+﻿using HarmonyLib;
+using Photon.Pun;
 using REPOssessed.Cheats.Core;
 using REPOssessed.Handler;
+using Steamworks;
 
 namespace REPOssessed.Cheats
 {
+    [HarmonyPatch]
     internal class NameSpoofer : ToggleCheat, IVariableCheat<string>
     {
-        public static string Value = SteamClient.Name;
+        private string OriginalValue = SteamClient.Name;
+        public static string Value = "";
 
         public override void Update()
         {
             if (!Enabled) return;
-            if (PhotonNetwork.LocalPlayer.NickName != Value)
-            {
-                PhotonNetwork.LocalPlayer.NickName = Value;
-                PlayerAvatar.instance.photonView.RPC("AddToStatsManagerRPC", RpcTarget.All, Value, PlayerAvatar.instance.GetLocalPlayer().Handle().GetSteamID());
-            }          
+            SetName(Value);
         }
 
-        public override void OnDisable()
+        public override void OnDisable() => SetName(OriginalValue);
+
+        private static void SetName(string name)
         {
-            PhotonNetwork.LocalPlayer.NickName = SteamClient.Name;
-            PlayerAvatar.instance.photonView.RPC("AddToStatsManagerRPC", RpcTarget.All, SteamClient.Name, PlayerAvatar.instance.GetLocalPlayer().Handle().GetSteamID());
+            PlayerAvatar player = PlayerAvatar.instance.GetLocalPlayer();
+            if (player == null || player.Handle() == null || player.Handle().GetName() == name) return;
+            if (!SemiFunc.IsMultiplayer()) PlayerAvatar.instance.AddToStatsManagerRPC(name, player.Handle().GetSteamID());
+            else
+            {
+                PhotonNetwork.LocalPlayer.NickName = name;
+                player.photonView.RPC("AddToStatsManagerRPC", RpcTarget.All, name, player.Handle().GetSteamID());
+            }
         }
     }
 }

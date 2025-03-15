@@ -1,19 +1,13 @@
 ﻿using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
-using REPOssessed.Cheats;
 using REPOssessed.Cheats.Components;
-using REPOssessed.Cheats.Core;
 using REPOssessed.Manager;
 using REPOssessed.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Quaternion = UnityEngine.Quaternion;
-using Vector3 = UnityEngine.Vector3;
 
 namespace REPOssessed.Handler
 {
@@ -21,21 +15,24 @@ namespace REPOssessed.Handler
     {
         private static List<string> rpcBlockedClients = new List<string>();
         public static Dictionary<string, Queue<RPCData>> rpcHistory = new Dictionary<string, Queue<RPCData>>();
-        public static List<PlayerAvatar> GetAlivePlayers() => GameObjectManager.players.Where(p => p != null && !p.Handle().IsDead()).ToList();
 
         private PlayerAvatar player;
+        public PlayerVoiceChat playerVoiceChat;
+        public PhysGrabObject physGrabObject;
+        public ItemEquippable itemEquippable;
         public Player photonPlayer => player.photonView.Owner;
         public string steamId => player.Reflect().GetValue<string>("steamID");
 
         public PlayerHandler(PlayerAvatar player)
         {
+            if (player == null) return;
             this.player = player;
+            playerVoiceChat = player.Reflect().GetValue<PlayerVoiceChat>("voiceChat");
+            physGrabObject = player.physGrabber.grabbed ? player.physGrabber.Reflect().GetValue<PhysGrabObject>("grabbedPhysGrabObject") : null;
+            itemEquippable = physGrabObject?.GetComponent<ItemEquippable>();
         }
 
         public static void ClearRPCHistory() => rpcHistory.Clear();
-
-        public Enemy GetClosestEnemy() => GameObjectManager.enemies.OrderBy(x => Vector3.Distance(x.transform.position, player.transform.position)).FirstOrDefault();
-        public PlayerAvatar GetClosestPlayer() => GetAlivePlayers().Where(x => x.GetInstanceID() != player.GetInstanceID()).OrderBy(x => Vector3.Distance(x.transform.position, player.transform.position)).FirstOrDefault();
 
         public void RPC(string name, RpcTarget target, params object[] args) => player.photonView.RPC(name, target, args);
 
@@ -110,16 +107,6 @@ namespace REPOssessed.Handler
 
                 if (!Patches.IgnoredRPCDebugs.Contains(rpc) && parameters != null) Debug.LogWarning($"RPC Params '{string.Join(", ", parameters.Select(p => p?.ToString() ?? "null"))}'");
 
-                if (rpc.Equals("BreakRPC") && player.Handle().IsLocalPlayer())
-                {
-                    PhysGrabObject physGrabObject = NoObjectMoneyLoss.GetPhysGrabObject((Vector3)parameters[1]);
-                    if (physGrabObject != null && !physGrabObject.Handle().IsEnemy())
-                    {
-                        NoObjectMoneyLoss.droppedPhysGrabObjects.Remove(physGrabObject);
-                        return false;
-                    }
-                }
-
                 if (player.Handle().IsLocalPlayer()) return true;
 
                 /*
@@ -155,15 +142,13 @@ namespace REPOssessed.Handler
             while (queue.Count > 0 && queue.Peek().IsExpired()) queue.Dequeue();
         }
 
-        public PhysGrabObject GetLastHeldPhysGrabObject() => player.physGrabber.Reflect().GetValue<PhysGrabObject>("grabbedPhysGrabObject");
-        public PhysGrabObject GetHeldPhysGrabObject() => player.physGrabber.grabbed ? player.physGrabber.Reflect().GetValue<PhysGrabObject>("grabbedPhysGrabObject") : null;
-        public ItemEquippable GetHeldItemEquippable() => GetHeldPhysGrabObject()?.GetComponent<ItemEquippable>();
         public Player PhotonPlayer() => player.photonView.Owner;
         public string GetSteamID() => player.Reflect().GetValue<string>("steamID");
         public bool IsLocalPlayer() => player.Reflect().GetValue<bool>("isLocal");
         public int GetHealth() => player.playerHealth.Reflect().GetValue<int>("health");
         public int GetMaxHealth() => player.playerHealth.Reflect().GetValue<int>("maxHealth");
         public bool IsDead() => player.Reflect().GetValue<bool>("deadSet");
+        public bool IsCrowned() => SessionManager.instance != null && SessionManager.instance.Reflect().GetValue<string>("crownedPlayerSteamID") == GetSteamID(); 
         public void RevivePlayer()
         {
             if (player.Handle().IsDead()) player.Revive();
@@ -174,9 +159,8 @@ namespace REPOssessed.Handler
             return photonPlayer.IsMasterClient;
         }
         public void Teleport(Vector3 position, Quaternion rotation) => player.Reflect().Invoke("SpawnRPC", position, rotation);
-        public bool IsTalking() => GetPlayerVoiceChat() != null && GetPlayerVoiceChat().Reflect().GetValue<bool>("isTalking");
-        public PlayerVoiceChat GetPlayerVoiceChat() => player.Reflect().GetValue<PlayerVoiceChat>("voiceChat");
-        public string GetName() => string.IsNullOrEmpty(player.Reflect().GetValue<string>("playerName")) ? player.name : player.Reflect().GetValue<string>("playerName");
+        public bool IsTalking() => playerVoiceChat != null && playerVoiceChat.Reflect().GetValue<bool>("isTalking");
+        public string GetName() => player.Reflect().GetValue<string>("playerName");
     }
 
     public static class PlayerExtensions

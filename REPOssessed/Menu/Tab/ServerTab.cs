@@ -42,6 +42,8 @@ namespace REPOssessed.Menu.Tab
                 UI.Button("ServerTab.ToggleAllInfoDisplays", InfoDisplay.ToggleAll);
                 UI.Checkbox("ServerTab.DisplayMapObjects", ref Settings.b_DisplayMapObjects);
                 UI.Checkbox("ServerTab.DisplayDeathHeads", ref Settings.b_DisplayDeathHeads);
+                UI.Checkbox("ServerTab.DisplayPlayers", ref Settings.b_DisplayPlayers);
+                UI.Checkbox("ServerTab.DisplayEnemies", ref Settings.b_DisplayEnemies);
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
 

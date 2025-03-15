@@ -1,4 +1,5 @@
 ﻿using Photon.Pun;
+using REPOssessed.Extensions;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
 using System.Collections.Generic;
@@ -50,11 +51,21 @@ namespace REPOssessed.Menu.Popup
             {
                 if (GameManager.Multiplayer())
                 {
-                    if (path == "shop") PhotonNetwork.InstantiateRoomObject($"Items/{item.name}", SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation, 0);
-                    else if (path == "surplus" || path == "enemy") PhotonNetwork.InstantiateRoomObject($"{GetValuablePath()}/{item.name}", SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation, 0);
-                    else PhotonNetwork.InstantiateRoomObject($"{GetValuablePath()}/{path}/{item.name}", SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation, 0);
+                    switch (path)
+                    {
+                        case "shop":
+                            $"Items/{item.name}".Spawn(SemiFunc.MainCamera().transform.position);
+                            break;
+                        case "surplus":
+                        case "enemy":
+                            $"{GetValuablePath()}/{item.name}".Spawn(SemiFunc.MainCamera().transform.position);
+                            break;
+                        default:
+                            $"{GetValuablePath()}/{path}/{item.name}".Spawn(SemiFunc.MainCamera().transform.position);
+                            break;
+                    }
                 }
-                else Object.Instantiate(item, SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation);
+                else item.Spawn(SemiFunc.MainCamera().transform.position);
             }
         }
 

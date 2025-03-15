@@ -1,9 +1,11 @@
-﻿using REPOssessed.Util;
+﻿using Photon.Pun;
+using REPOssessed.Util;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-namespace REPOssessed
+namespace REPOssessed.Extensions
 {
     public static class Extensions
     {
@@ -28,6 +30,16 @@ namespace REPOssessed
             if (component != null) return component;
             component = obj.GetComponentInParent<T>();
             return component;
+        }
+
+        public static GameObject Spawn(this string path, Vector3 position = default, Quaternion rotation = default)
+        {
+            return PhotonNetwork.InstantiateRoomObject(path, position, rotation);
+        }
+
+        public static GameObject Spawn(this GameObject gameObject, Vector3 position = default, Quaternion rotation = default)
+        {
+            return Object.Instantiate(gameObject, position, rotation);
         }
 
         public static RaycastHit[] SphereCastForward(this Transform transform, float sphereRadius = 1.0f)

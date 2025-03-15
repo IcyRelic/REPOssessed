@@ -112,9 +112,7 @@ namespace REPOssessed
             {
                 if (Event.current.type == EventType.Repaint)
                 {
-                    string REPOssessedTitle = $"REPOssessed {Settings.s_Version} By Dustin | Menu Toggle: {FirstSetupManagerWindow.GetMenuKeybindName()}";
-                    REPOssessedTitle += Cheat.Instance<FPSCounter>().Enabled ? $" | FPS: {Cheat.Instance<FPSCounter>().FPS}" : "";
-                    VisualUtil.DrawString(new Vector2(5f, 2f), REPOssessedTitle, Settings.c_primary.GetColor(), false, false, true, 14);
+                    VisualUtil.DrawString(new Vector2(5f, 2f), $"REPOssessed {Settings.s_Version} By Dustin | Menu Toggle: {FirstSetupManagerWindow.GetMenuKeybindName()}{(Cheat.Instance<FPSCounter>().Enabled ? $" | FPS: {Cheat.Instance<FPSCounter>().FPS}" : "")}", Settings.c_primary.GetColor(), false, false, true, 14);
                     if (MenuUtil.resizing)
                     {
                         VisualUtil.DrawString(new Vector2(Screen.width / 2, 35f), new string[] {"SettingsTab.ResizeTitle", "SettingsTab.ResizeConfirm"}.Localize(), Settings.c_primary, true, true, true, 22);

@@ -53,7 +53,7 @@ namespace REPOssessed
         public static RGBAColor c_espCart = new RGBAColor(0, 0, 255, 1f);
         public static RGBAColor c_espExtractions = new RGBAColor(255, 165, 0, 1f);
         public static RGBAColor c_espDeathHeads = new RGBAColor(128, 0, 128, 1f);
-        public static RGBAColor c_espTruck = new RGBAColor(0, 255, 255, 0.5f);
+        public static RGBAColor c_espTruck = new RGBAColor(0, 255, 255, 1f);
 
         public static bool b_PlayerESP = false;
         public static bool b_EnemyESP = false;
@@ -65,6 +65,8 @@ namespace REPOssessed
 
         public static bool b_DisplayMapObjects = false;
         public static bool b_DisplayDeathHeads = false;
+        public static bool b_DisplayPlayers = false;
+        public static bool b_DisplayEnemies = false;
 
         internal class Config
         {
@@ -140,9 +142,10 @@ namespace REPOssessed
                 cheatSettings["ExtractionESP"] = b_ExtractionESP.ToString();
                 cheatSettings["DeathHeadESP"] = b_DeathHeadESP.ToString();
                 cheatSettings["TruckESP"] = b_TruckESP.ToString();
-                cheatSettings["DisplayMapObjects"] = b_TruckESP.ToString();
-                cheatSettings["DisplayDeathHeads"] = b_TruckESP.ToString();
-                cheatSettings["DisplaySpectators"] = b_TruckESP.ToString();
+                cheatSettings["DisplayMapObjects"] = b_DisplayMapObjects.ToString();
+                cheatSettings["DisplayDeathHeads"] = b_DeathHeadESP.ToString();
+                cheatSettings["DisplayPlayers"] = b_DisplayPlayers.ToString();
+                cheatSettings["DisplayEnemies"] = b_DisplayEnemies.ToString();
 
                 json["KeyBinds"] = JObject.FromObject(keybinds);
                 json["Toggles"] = JObject.FromObject(toggles);
@@ -243,6 +246,10 @@ namespace REPOssessed
                         b_DisplayMapObjects = bool.Parse(displayMapObjectsToken.ToString());
                     if (cheatSettings.TryGetValue("DisplayDeathHeads", out JToken displayDeathHeadsToken))
                         b_DisplayDeathHeads = bool.Parse(displayDeathHeadsToken.ToString());
+                    if (cheatSettings.TryGetValue("DisplayPlayers", out JToken displayPlayersToken))
+                        b_DisplayPlayers = bool.Parse(displayPlayersToken.ToString());
+                    if (cheatSettings.TryGetValue("DisplayEnemies", out JToken displayEnemiesToken))
+                        b_DisplayEnemies = bool.Parse(displayEnemiesToken.ToString());
                 }
 
                     Debug.Log("Loading Colors...");

@@ -1,16 +1,19 @@
-﻿using System;
+﻿using REPOssessed.Cheats.Core;
+using REPOssessed.Extensions;
+using REPOssessed.Handler;
+using REPOssessed.Manager;
+using REPOssessed.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using REPOssessed.Cheats.Core;
-using REPOssessed.Manager;
-using REPOssessed.Util;
-using REPOssessed.Handler;
 
 namespace REPOssessed.Cheats
 {
-    internal class ESP : ToggleCheat
+    internal class ESP : ToggleCheat, IVariableCheat<float>
     {
+        public static float Value = 5000f;
+
         public override void OnGui()
         {
             try
@@ -33,8 +36,8 @@ namespace REPOssessed.Cheats
         public static void ToggleAll()
         {
             Settings.b_PlayerESP = !Settings.b_PlayerESP;
-            Settings.b_ItemESP = !Settings.b_ItemESP;
             Settings.b_EnemyESP = !Settings.b_EnemyESP;
+            Settings.b_ItemESP = !Settings.b_ItemESP;
             Settings.b_CartESP = !Settings.b_CartESP;
             Settings.b_ExtractionESP = !Settings.b_ExtractionESP;
             Settings.b_DeathHeadESP = !Settings.b_DeathHeadESP;
@@ -48,7 +51,7 @@ namespace REPOssessed.Cheats
             {
                 if (obj.transform == null) continue;
                 float distance = GetDistanceToPos(obj.transform.position);
-                if (distance == 0f || !WorldToScreen(obj.transform.position, out var screen)) continue;
+                if (distance == 0f || distance > Value || !WorldToScreen(obj.transform.position, out var screen)) continue;
                 VisualUtil.DrawDistanceString(screen, labelSelector(obj), colorSelector(obj), distance);
             }
         }

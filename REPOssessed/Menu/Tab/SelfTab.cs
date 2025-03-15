@@ -1,5 +1,6 @@
 using REPOssessed.Cheats;
 using REPOssessed.Cheats.Core;
+using REPOssessed.Extensions;
 using REPOssessed.Handler;
 using REPOssessed.Language;
 using REPOssessed.Manager;
@@ -29,21 +30,17 @@ namespace REPOssessed.Menu.Tab
                 UI.Header("SelfTab.Title");
                 UI.Checkbox("SelfTab.UnlimitedEnergy", Cheat.Instance<UnlimitedStamina>());
                 UI.Checkbox("SelfTab.Godmode", Cheat.Instance<Godmode>());
-
                 UI.Checkbox("SelfTab.SafeGodmode", Cheat.Instance<SafeGodmode>());
                 UI.Checkbox("SelfTab.NoTumble", Cheat.Instance<NoTumble>());
                 UI.Checkbox("SelfTab.InfiniteJump", Cheat.Instance<InfiniteJump>());
-                UI.Checkbox("SelfTab.Invisibility", Cheat.Instance<Invisibility>()); // doesn't work 
-                UI.TextboxAction("SelfTab.ChangeColor", ref ColorChanger.Value, 1,
-                    new UIButton("General.Set", Cheat.Instance<ColorChanger>().Execute)
-                );
+                UI.Checkbox("SelfTab.Invisibility", Cheat.Instance<Invisibility>());
                 UI.Checkbox("SelfTab.UnlimitedBattery", Cheat.Instance<UnlimitedBattery>());
-                UI.Checkbox("SelfTab.RainbowMode", Cheat.Instance<SuitRainbowMode>());
+                UI.Checkbox("SelfTab.RainbowSuit", Cheat.Instance<RainbowSuit>());
                 UI.Checkbox("SelfTab.UseSpoofedName", Cheat.Instance<NameSpoofer>());
                 UI.Textbox("SelfTab.SpoofedName", ref NameSpoofer.Value, true, 100);
-                UI.Checkbox("SelfTab.NoObjectMoneyLoss", Cheat.Instance<NoObjectMoneyLoss>()); 
+                UI.Checkbox(["SelfTab.NoObjectMoneyLoss", "General.HostTag"], Cheat.Instance<NoObjectMoneyLoss>()); 
                 UI.CheatToggleSlider(Cheat.Instance<NoClip>(), "SelfTab.NoClip", NoClip.Value.ToString("#"), ref NoClip.Value, 1f, 20f);
-                UI.CheatToggleSlider(Cheat.Instance<SuperSpeed>(), "SelfTab.SuperSpeed", SuperSpeed.Value.ToString("#"), ref SuperSpeed.Value, 1f, 100f);
+                UI.CheatToggleSlider(Cheat.Instance<SuperSpeed>(), "SelfTab.SuperSpeed", SuperSpeed.Value.ToString("#"), ref SuperSpeed.Value, 5f, 100f);
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
 
