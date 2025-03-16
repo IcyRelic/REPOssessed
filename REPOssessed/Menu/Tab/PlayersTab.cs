@@ -1,4 +1,6 @@
-﻿using REPOssessed.Handler;
+﻿using REPOssessed.Cheats;
+using REPOssessed.Cheats.Core;
+using REPOssessed.Handler;
 using REPOssessed.Language;
 using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
@@ -66,8 +68,6 @@ namespace REPOssessed.Menu.Tab
             UI.Button("PlayersTab.Crown", () => PunManager.instance.CrownPlayerSync(selectedPlayer.Handle().GetSteamID()));
             UI.Button("PlayersTab.Kill", () => selectedPlayer.PlayerDeath(-1));
             UI.Button("PlayersTab.Revive", () => selectedPlayer.Handle().RevivePlayer());
-            UI.Button("PlayersTab.ForceJump", () => selectedPlayer.Jump(true));
-            UI.Button("PlayersTab.ForceLand", () => selectedPlayer.Land());
             UI.TextboxAction("PlayersTab.ChatMessage", ref message, 100, new UIButton("PlayersTab.Send", () => selectedPlayer.ChatMessageSend(message, false)));
             UI.TextboxAction("PlayersTab.ChangeColor", ref color, 2, new UIButton("General.Set", () => selectedPlayer.PlayerAvatarSetColor(int.Parse(color))));
             UI.Button("PlayersTab.LureAllEnemies", () => GameObjectManager.enemies.Where(e => e != null && e.Handle() != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()).ToList().ForEach(e => e.Handle().Lure(selectedPlayer)));

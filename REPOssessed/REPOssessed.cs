@@ -50,7 +50,7 @@ namespace REPOssessed
             try
             {
                 harmony = new Harmony("REPOssessed");
-                Harmony.DEBUG = true;
+                Harmony.DEBUG = false;
                 harmony.PatchAll(Assembly.GetExecutingAssembly());
             }
             catch (Exception e)

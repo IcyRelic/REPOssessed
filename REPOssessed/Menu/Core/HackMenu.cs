@@ -15,6 +15,7 @@ namespace REPOssessed.Menu.Core
         public PopupMenu FirstSetupManagerWindow = new FirstSetupManagerWindow(1);
         public PopupMenu ItemManagerWindow = new ItemManagerWindow(2);
         public PopupMenu LootManagerWindow = new LootManagerWindow(3);
+        public PopupMenu LevelManagerWindow = new LevelManagerWindow(4);
 
         private Vector2 scrollPos = Vector2.zero;
         private List<MenuTab> tabs = new List<MenuTab>();
@@ -102,6 +103,7 @@ namespace REPOssessed.Menu.Core
                 windowRect = GUILayout.Window(0, windowRect, new GUI.WindowFunction(DrawContent), "REPOssessed");
                 ItemManagerWindow.Draw();
                 LootManagerWindow.Draw();
+                LevelManagerWindow.Draw();
                 GUI.color = Color.white;
             }
             if (!Cursor.visible) Cursor.visible = true;

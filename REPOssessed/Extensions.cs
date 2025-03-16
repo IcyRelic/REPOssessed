@@ -2,6 +2,7 @@
 using REPOssessed.Util;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -30,6 +31,12 @@ namespace REPOssessed.Extensions
             if (component != null) return component;
             component = obj.GetComponentInParent<T>();
             return component;
+        }
+
+        public static void CompleteExtraction(this ExtractionPoint extraction)
+        {
+            if (SemiFunc.IsMultiplayer()) extraction.Reflect().GetValue<PhotonView>("photonView").RPC("StateSetRPC", RpcTarget.All, ExtractionPoint.State.Complete);
+             else extraction.StateSetRPC(ExtractionPoint.State.Complete);
         }
 
         public static GameObject Spawn(this string path, Vector3 position = default, Quaternion rotation = default)

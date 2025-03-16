@@ -18,7 +18,8 @@ namespace REPOssessed.Cheats
                 if (physGrabObject?.Handle() == null) return true;
                 PlayerAvatar player = physGrabObject.Handle().GetLastPlayerHeld();
                 if (player == null || player.Handle() == null) return true;
-                if (PlayerAvatar.instance.GetLocalPlayer().Handle().physGrabObject == physGrabObject || player.Handle().IsLocalPlayer()) return false;
+                Debug.Log($"{PlayerAvatar.instance.GetLocalPlayer().Handle().physGrabObject} | {physGrabObject}");
+                if (player.Handle().IsLocalPlayer() || PlayerAvatar.instance.GetLocalPlayer().Handle().physGrabObject == physGrabObject) return false;
             }
             return true;
         }

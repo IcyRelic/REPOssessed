@@ -1,5 +1,4 @@
-﻿using Photon.Pun;
-using REPOssessed.Extensions;
+﻿using REPOssessed.Extensions;
 using REPOssessed.Handler;
 using REPOssessed.Language;
 using REPOssessed.Manager;
@@ -8,7 +7,6 @@ using REPOssessed.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -123,7 +121,13 @@ namespace REPOssessed.Menu.Tab
                 return;
             }
 
-            UI.Header("EnemyTab.MonsterActions");
+            string enemyTarget = enemy.Handle().GetEnemyTarget() == null ? "General.None".Localize() : enemy.Handle().GetEnemyTarget().Handle().GetName();
+
+            UI.Header("EnemyTab.EnemyActions");
+
+            UI.Label("EnemyTab.Health", enemy.Handle().GetHealth().ToString());
+            UI.Label("EnemyTab.MaxHealth", enemy.Handle().GetMaxHealth().ToString());
+            UI.Label("EnemyTab.EnemyTarget", enemyTarget);
 
             UI.Button("EnemyTab.Kill", () => enemy.Handle().Kill());
             UI.Button("EnemyTab.Lure", () => enemy.Handle().Lure(selectedPlayer));
@@ -181,22 +185,7 @@ namespace REPOssessed.Menu.Tab
             if (roomVolume == null || roomVolume.transform == null) return;
             LevelPoint levelPoint = LevelGenerator.Instance.LevelPathPoints.OrderByDescending(p => Vector3.Distance(p.transform.position, roomVolume.transform.position)).FirstOrDefault();
             if (levelPoint == null || levelPoint.transform == null) return;
-            GameObject gameObject = null;
-            for (int i = 0; i < amount; i++)
-            {
-                enemy.spawnObjects.ToList().ForEach(e =>
-                {
-                    if (SemiFunc.IsMultiplayer()) gameObject = $"{LevelGenerator.Instance.Reflect().GetValue<string>("ResourceEnemies")}/{e.name}".Spawn(SemiFunc.MainCamera().transform.position);
-                    else gameObject = e.Spawn(levelPoint.transform.position);
-                    EnemyParent enemyParent = gameObject.GetComponent<EnemyParent>();
-                    if (enemyParent)
-                    {
-                        enemyParent.Reflect().SetValue("SetupDone", true);
-                        gameObject.GetComponentInChildren<Enemy>().EnemyTeleported(levelPoint.transform.position);
-                        enemyParent.DespawnedTimerSet(0f);
-                    }
-                });
-            }
+            for (int i = 0; i < amount; i++) LevelGenerator.Instance.Reflect().Invoke("EnemySpawn", false, enemy, levelPoint.transform.position);
         }
     }
 }

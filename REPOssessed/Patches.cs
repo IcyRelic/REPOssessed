@@ -6,6 +6,8 @@ using REPOssessed.Cheats;
 using REPOssessed.Cheats.Core;
 using REPOssessed.Handler;
 using REPOssessed.Manager;
+using REPOssessed.Menu.Popup;
+using REPOssessed.Menu.Tab;
 using REPOssessed.Util;
 using System;
 using System.Collections.Generic;
@@ -129,11 +131,21 @@ namespace REPOssessed
         [HarmonyPatch(typeof(MenuPageEsc), "ButtonEventQuitToMenu"), HarmonyPrefix]
         public static void ButtonEventQuitToMenu() => GameObjectManager.ClearObjects();
 
-        [HarmonyPatch(typeof(SteamManager), "OnLobbyMemberJoined"), HarmonyPostfix]
-        public static void OnLobbyMemberJoined() => REPOssessed.Instance.AlertUsingREPOssessed();
-
+        [HarmonyPatch(typeof(MenuPageLobby), "PlayerAdd"), HarmonyPostfix]
+        public static void PlayerAdd()
+        {
+            if (!SemiFunc.RunIsLobbyMenu()) return;
+            REPOssessed.Instance.AlertUsingREPOssessed();
+        }
 
         public static Dictionary<PhysGrabObject, PlayerAvatar> LastGrabbedPhysObjects = new Dictionary<PhysGrabObject, PlayerAvatar>();
+
+        [HarmonyPatch(typeof(PhysGrabObject), "GrabStarted"), HarmonyPostfix]
+        public static void GrabStarted(PhysGrabObject __instance, PhysGrabber player)
+        {
+            if (!LastGrabbedPhysObjects.ContainsKey(__instance) && __instance.playerGrabbing.Count == 1) LastGrabbedPhysObjects.Add(__instance, player.playerAvatar);
+            else if (LastGrabbedPhysObjects.ContainsKey(__instance) && LastGrabbedPhysObjects[__instance] != player.playerAvatar) LastGrabbedPhysObjects[__instance] = player.playerAvatar;
+        }
 
         [HarmonyPatch(typeof(PhysGrabObject), "GrabEnded"), HarmonyPrefix]
         public static void GrabEnded(PhysGrabObject __instance, PhysGrabber player)

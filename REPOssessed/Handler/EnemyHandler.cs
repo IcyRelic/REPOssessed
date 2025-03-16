@@ -41,11 +41,12 @@ namespace REPOssessed.Handler
             enemy.SetChaseTarget(player);
         }
 
-        public bool IsDisabled() => enemyParent != null && !enemyParent.EnableObject.activeSelf || !enemyParent.Reflect().GetValue<bool>("Spawned");
+        public bool IsDisabled() => enemyParent == null || enemyParent.EnableObject == null || !enemyParent.EnableObject.activeSelf || !(enemyParent.Reflect()?.GetValue<bool>("Spawned") ?? false);
         public bool IsDead() => enemyHealth != null && enemyHealth.Reflect().GetValue<bool>("dead");
         public string GetName() => enemyParent != null ? enemyParent.enemyName : "Unknown";
         public int GetHealth() => enemyHealth != null ? enemyHealth.Reflect().GetValue<int>("healthCurrent") : 0;
         public int GetMaxHealth() => enemyHealth != null ? enemyHealth.health : 0;
+        public PlayerAvatar GetEnemyTarget() => enemy.Reflect().GetValue<PlayerAvatar>("TargetPlayerAvatar");
     }
 
     public static class EnemyExtensions

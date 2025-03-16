@@ -1,11 +1,9 @@
-﻿using Photon.Pun;
-using REPOssessed.Extensions;
+﻿using REPOssessed.Extensions;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace REPOssessed.Menu.Popup
 {
