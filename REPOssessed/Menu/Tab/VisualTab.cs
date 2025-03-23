@@ -33,7 +33,7 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos2, () =>
             {
                 UI.Header("VisualTab.ESP");
-                UI.CheatToggleSlider(Cheat.Instance<ESP>(), "VisualTab.ToggleESP", ESP.Value.ToString("#"), ref ESP.Value, 0f, 5000f);
+                UI.CheatToggleSlider(Cheat.Instance<ESP>(), "VisualTab.ToggleESP", ESP.Value.ToString("F1"), ref ESP.Value, 0f, 5000f);
                 UI.Button("VisualTab.ToggleAllESP", ESP.ToggleAll);
                 UI.Checkbox("VisualTab.PlayerESP", ref Settings.b_PlayerESP);
                 UI.Checkbox("VisualTab.EnemyESP", ref Settings.b_EnemyESP);

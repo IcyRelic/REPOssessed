@@ -18,6 +18,7 @@ namespace REPOssessed.Menu.Tab
         private Vector2 scrollPos2 = Vector2.zero;
         private Vector2 scrollPos3 = Vector2.zero;
         private Vector2 scrollPos4 = Vector2.zero;
+        private int currency = 3000;
 
         public override void Draw()
         {
@@ -36,7 +37,8 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos, () =>
             {
                 UI.Header("ServerTab.ServerCheats");
-               
+                UI.TextboxAction("ServerTab.SetCurrency", ref currency, 5, new UIButton("General.Set", () => Cheat.Instance<SetCurrency>()._SetCurrency(currency)));
+                UI.Button("ServerTab.BreakAllObjects", () => GameObjectManager.items.Where(i => i != null && i.Handle() != null).ToList().ForEach(i => i.Handle().Break()));
 
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }

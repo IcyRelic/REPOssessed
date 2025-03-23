@@ -5,32 +5,25 @@ using UnityEngine;
 
 namespace REPOssessed.Cheats
 {
-    internal class RainbowSuit : ToggleCheat
+    internal class RainbowSuit : ToggleCheat, IVariableCheat<float>
     {
-        private Coroutine rainbowSuitCoroutine;
+        public static float Value = 0.1f;
 
         public override void OnEnable()
         {
-            if (PlayerAvatar.instance.GetLocalPlayer() != null && rainbowSuitCoroutine == null) rainbowSuitCoroutine = REPOssessed.Instance.StartCoroutine(RainbowSuitStart());
-        }
-
-        public override void OnDisable()
-        {
-            if (rainbowSuitCoroutine == null) return;
-            REPOssessed.Instance.StopCoroutine(rainbowSuitCoroutine);
-            rainbowSuitCoroutine = null;
+            REPOssessed.Instance.StartCoroutine(RainbowSuitStart());
         }
 
         private IEnumerator RainbowSuitStart()
         {
             int colors = AssetManager.instance.playerColors.Count;
             int index = 0;
-            while (true) 
+            while (Enabled) 
             {
-                if (PlayerAvatar.instance.GetLocalPlayer() == null) yield break;
+                if (PlayerAvatar.instance.GetLocalPlayer() == null) yield return new WaitForSeconds(0.5f);
                 PlayerAvatar.instance.GetLocalPlayer().PlayerAvatarSetColor(index);
                 index = (index + 1) % colors;
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(Value);
             }
         }
     }

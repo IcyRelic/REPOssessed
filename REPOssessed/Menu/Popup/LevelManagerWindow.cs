@@ -1,4 +1,6 @@
 ﻿using Photon.Pun;
+using REPOssessed.Handler;
+using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
 using System.Collections.Generic;
@@ -20,6 +22,12 @@ namespace REPOssessed.Menu.Popup
                 if (!REPOssessed.Instance.IsIngame || RunManager.instance == null || RunManager.instance.levelCurrent == null || RoundDirector.instance == null || RunManager.instance.levels == null)
                 {
                     UI.Label("General.MustBeIngame", Settings.c_error);
+                    GUI.DragWindow();
+                    return;
+                }
+                if (!PlayerAvatar.instance.GetLocalPlayer().Handle().IsMasterClient())
+                {
+                    UI.Label("General.HostRequired", Settings.c_error);
                     GUI.DragWindow();
                     return;
                 }

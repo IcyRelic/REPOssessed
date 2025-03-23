@@ -31,7 +31,7 @@ namespace REPOssessed.Menu.Popup
                 UI.Button("LootManager.TeleportAllItems", () => TeleportAll());
                 GUILayout.EndHorizontal();
                 GUILayout.Space(20);
-                UI.ButtonGrid(GameObjectManager.items.Where(i => i != null && i.Handle() != null && !i.Handle().IsCart() && i.Handle().IsValuable() || i.Handle().IsShopItem()).GroupBy(i => i.Handle().GetName(), StringComparer.OrdinalIgnoreCase).Select(g => new { Item = g.First(), Count = g.Count() }).OrderBy(x => x.Item.Handle().GetName(), StringComparer.OrdinalIgnoreCase).ToList(), x => $"{x.Item.Handle().GetName()} {x.Count}x", s_search, x => x.Item?.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation), 3);
+                UI.ButtonGrid(GameObjectManager.items.Where(i => i != null && i.Handle() != null && (!i.Handle().IsCart() && i.Handle().IsValuable() || i.Handle().IsShopItem())).GroupBy(i => i.Handle().GetName(), StringComparer.OrdinalIgnoreCase).Select(g => new { Item = g.FirstOrDefault(), Count = g.Count() }).OrderBy(x => x.Item?.Handle().GetName(), StringComparer.OrdinalIgnoreCase).ToList(), x => $"{x.Item?.Handle().GetName()} {x.Count}x", s_search, x => x.Item?.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation), 3);
             });
             GUI.DragWindow();
         }

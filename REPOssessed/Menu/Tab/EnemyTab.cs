@@ -19,14 +19,15 @@ namespace REPOssessed.Menu.Tab
         private Vector2 scrollPos = Vector2.zero;
         private Vector2 scrollPos2 = Vector2.zero;
         private Vector2 scrollPos3 = Vector2.zero;
+        private Vector2 scrollPos4 = Vector2.zero;
         private int selectedTab = 0;
         private readonly string[] tabs = ["EnemyTab.EnemyList", "EnemyTab.SpawnEnemies"];
         private static int selectedEnemy = -1;
         private static int selectedEnemySetup = -1;
         private PlayerAvatar selectedPlayer;
         private string s_spawnAmount = "1";
-        private int damage = 3;
-        private int heal = 3;
+        private int damage = 1;
+        private int heal = 1;
         private float freeze = 3;
 
         public override void Draw()
@@ -81,7 +82,7 @@ namespace REPOssessed.Menu.Tab
 
             GUILayout.BeginVertical(GUILayout.Width(width), GUILayout.Height(height));
             GUILayout.Space(25);
-            scrollPos = GUILayout.BeginScrollView(scrollPos);
+            scrollPos4 = GUILayout.BeginScrollView(scrollPos4);
 
             foreach (T item in objects)
             {
@@ -133,15 +134,9 @@ namespace REPOssessed.Menu.Tab
             UI.Button("EnemyTab.Lure", () => enemy.Handle().Lure(selectedPlayer));
             UI.Button("EnemyTab.TeleportToEnemy", () => PlayerAvatar.instance.GetLocalPlayer().Handle().Teleport(enemy.transform.position, enemy.transform.rotation));
 
-            UI.TextboxAction("EnemyTab.Damage", ref damage, 3,
-                new UIButton("General.Set", () => enemy.Handle().Hurt(damage))
-            );
-            UI.TextboxAction("EnemyTab.Heal", ref heal, 3,
-                new UIButton("General.Set", () => enemy.Handle().Heal(heal))
-            );
-            UI.TextboxAction("EnemyTab.Freeze", ref freeze, 3,
-                new UIButton("General.Set", () => enemy.Freeze(freeze))
-            );
+            UI.TextboxAction("EnemyTab.Damage", ref damage, 3, new UIButton("General.Set", () => enemy.Handle().Hurt(damage)));
+            UI.TextboxAction("EnemyTab.Heal", ref heal, 3, new UIButton("General.Set", () => enemy.Handle().Heal(heal)));
+            UI.TextboxAction("EnemyTab.Freeze", ref freeze, 3, new UIButton("General.Set", () => enemy.Freeze(freeze)));
         }
 
         private void EnemySpawnerContent()

@@ -16,10 +16,10 @@ namespace REPOssessed.Handler
         private static List<string> rpcBlockedClients = new List<string>();
         public static Dictionary<string, Queue<RPCData>> rpcHistory = new Dictionary<string, Queue<RPCData>>();
 
-        private PlayerAvatar player;
-        public PlayerVoiceChat playerVoiceChat;
-        public PhysGrabObject physGrabObject;
-        public ItemEquippable itemEquippable;
+        private PlayerAvatar player = null;
+        public PlayerVoiceChat playerVoiceChat = null;
+        public PhysGrabObject physGrabObject = null;
+
         public Player photonPlayer => player.photonView.Owner;
         public string steamId => player.Reflect().GetValue<string>("steamID");
 
@@ -27,9 +27,8 @@ namespace REPOssessed.Handler
         {
             if (player == null) return;
             this.player = player;
-            playerVoiceChat = player.Reflect().GetValue<PlayerVoiceChat>("voiceChat");
-            physGrabObject = player.physGrabber.grabbed ? player.physGrabber.Reflect().GetValue<PhysGrabObject>("grabbedPhysGrabObject") : null;
-            itemEquippable = physGrabObject?.GetComponent<ItemEquippable>();
+            playerVoiceChat = player?.Reflect().GetValue<PlayerVoiceChat>("voiceChat") ?? null;
+            physGrabObject = player.physGrabber?.Reflect()?.GetValue<PhysGrabObject>("grabbedPhysGrabObject") ?? null;
         }
 
         public static void ClearRPCHistory() => rpcHistory.Clear();
@@ -145,8 +144,8 @@ namespace REPOssessed.Handler
         public Player PhotonPlayer() => player.photonView.Owner;
         public string GetSteamID() => player.Reflect().GetValue<string>("steamID");
         public bool IsLocalPlayer() => player.Reflect().GetValue<bool>("isLocal");
-        public int GetHealth() => player.playerHealth.Reflect().GetValue<int>("health");
-        public int GetMaxHealth() => player.playerHealth.Reflect().GetValue<int>("maxHealth");
+        public int GetHealth() => player.playerHealth?.Reflect().GetValue<int>("health") ?? 0;
+        public int GetMaxHealth() => player.playerHealth?.Reflect().GetValue<int>("maxHealth") ?? 0;
         public bool IsDead() => player.Reflect().GetValue<bool>("deadSet");
         public bool IsCrowned() => SessionManager.instance != null && SessionManager.instance.Reflect().GetValue<string>("crownedPlayerSteamID") == GetSteamID(); 
         public void RevivePlayer()
@@ -158,8 +157,26 @@ namespace REPOssessed.Handler
             if (player.Handle().IsLocalPlayer()) return SemiFunc.IsMasterClientOrSingleplayer();
             return photonPlayer.IsMasterClient;
         }
+        public void Heal(int amount)
+        {
+            player.playerHealth.Reflect().SetValue("health", amount);
+            StatsManager.instance.SetPlayerHealth(player.Handle().GetSteamID(), amount, false);
+            if (GameManager.Multiplayer()) player.playerHealth.Reflect().GetValue<PhotonView>("photonView").RPC("UpdateHealthRPC", RpcTarget.Others, amount, GetMaxHealth(), false);
+        }
+        public void Hurt(int amount)
+        {
+            player.playerHealth.Reflect().SetValue("health", GetHealth() - amount);
+            if (GetHealth() <= 0)
+            {
+                player.PlayerDeath(-1);
+                player.playerHealth.Reflect().SetValue("health", 0);
+                return;
+            }
+            StatsManager.instance.SetPlayerHealth(player.Handle().GetSteamID(), GetHealth(), false);
+            if (GameManager.Multiplayer()) player.photonView.RPC("UpdateHealthRPC", RpcTarget.Others, GetHealth(), GetMaxHealth(), true);
+        }
         public void Teleport(Vector3 position, Quaternion rotation) => player.Reflect().Invoke("SpawnRPC", position, rotation);
-        public bool IsTalking() => playerVoiceChat != null && playerVoiceChat.Reflect().GetValue<bool>("isTalking");
+        public bool IsTalking() => playerVoiceChat?.Reflect().GetValue<bool>("isTalking") ?? false;
         public string GetName() => player.Reflect().GetValue<string>("playerName");
     }
 
@@ -180,10 +197,6 @@ namespace REPOssessed.Handler
 
     public static class PhotonPlayerExtensions
     {
-        public static string GetSteamID(this Player photonPlayer)
-        {
-            return photonPlayer.GamePlayer().Handle().GetSteamID();
-        }
         public static PlayerAvatar GamePlayer(this Player photonPlayer)
         {
             if (GameObjectManager.players == null) return null;

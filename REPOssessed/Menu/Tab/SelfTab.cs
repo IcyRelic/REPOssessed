@@ -35,12 +35,14 @@ namespace REPOssessed.Menu.Tab
                 UI.Checkbox("SelfTab.InfiniteJump", Cheat.Instance<InfiniteJump>());
                 UI.Checkbox("SelfTab.Invisibility", Cheat.Instance<Invisibility>());
                 UI.Checkbox("SelfTab.UnlimitedBattery", Cheat.Instance<UnlimitedBattery>());
-                UI.Checkbox("SelfTab.RainbowSuit", Cheat.Instance<RainbowSuit>());
+                UI.Checkbox(["SelfTab.NonEnemyTargetable", "General.HostTag"], Cheat.Instance<NonEnemyTargetable>());
+                UI.Checkbox("SelfTab.AlwaysShowLevel", Cheat.Instance<AlwaysShowLevel>());
+                UI.CheatToggleSlider(Cheat.Instance<RainbowSuit>(), "SelfTab.RainbowSuit", RainbowSuit.Value.ToString("F1"), ref RainbowSuit.Value, 0.1f, 1f);
                 UI.Checkbox("SelfTab.UseSpoofedName", Cheat.Instance<NameSpoofer>());
                 UI.Textbox("SelfTab.SpoofedName", ref NameSpoofer.Value, true, 100);
-                UI.Checkbox(["SelfTab.NoObjectMoneyLoss", "General.HostTag"], Cheat.Instance<NoObjectMoneyLoss>()); 
-                UI.CheatToggleSlider(Cheat.Instance<NoClip>(), "SelfTab.NoClip", NoClip.Value.ToString("#"), ref NoClip.Value, 1f, 20f);
-                UI.CheatToggleSlider(Cheat.Instance<SuperSpeed>(), "SelfTab.SuperSpeed", SuperSpeed.Value.ToString("#"), ref SuperSpeed.Value, 5f, 100f);
+                UI.Checkbox(["SelfTab.NoObjectMoneyLoss", "General.HostTag"], Cheat.Instance<NoObjectMoneyLoss>());
+                UI.CheatToggleSlider(Cheat.Instance<NoClip>(), "SelfTab.NoClip", NoClip.Value.ToString("F1"), ref NoClip.Value, 1f, 20f);
+                UI.CheatToggleSlider(Cheat.Instance<SuperSpeed>(), "SelfTab.SuperSpeed", SuperSpeed.Value.ToString("F1"), ref SuperSpeed.Value, 5f, 100f);
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
 
@@ -49,8 +51,9 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos2, () =>
             {
                 UI.Header("SelfTab.TeleportTitle");
-                UI.Button("SelfTab.TeleportToTruck", () => TeleportToTruck());
-                ExtractionsTeleportLocations();
+                UI.Button("SelfTab.Truck", () => TeleportToTruck(), "SelfTab.Teleport");
+                CartsTeleportContent();
+                ExtractionsTeleportContent();
 
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }
@@ -64,14 +67,25 @@ namespace REPOssessed.Menu.Tab
             player.Handle().Teleport(spawnPoint.transform.position, spawnPoint.transform.rotation);
         }
 
-        private void ExtractionsTeleportLocations()
+        private void CartsTeleportContent()
+        {
+            PlayerAvatar player = PlayerAvatar.instance.GetLocalPlayer();
+            if (player == null) return;
+            int Index = 1;
+            GameObjectManager.carts.Where(c => c != null && c.transform != null).ToList().ForEach(c =>
+            {
+                UI.Button($"{"SelfTab.Cart".Localize()} {Index++}", () => player.Handle().Teleport(c.transform.position, c.transform.rotation), "SelfTab.Teleport");
+            });
+        }
+
+        private void ExtractionsTeleportContent()
         {
             PlayerAvatar player = PlayerAvatar.instance.GetLocalPlayer();
             if (player == null) return;
             int Index = 1;
             GameObjectManager.extractions.Where(e => e != null && e.transform != null && !e.Reflect().GetValue<bool>("isShop") && !e.StateIs(ExtractionPoint.State.Complete)).ToList().ForEach(e =>
             {
-                UI.Button($"{"SelfTab.Extraction".Localize()} {Index++}", () => player.Handle().Teleport(e.transform.position, e.transform.rotation));
+                UI.Button($"{"SelfTab.Extraction".Localize()} {Index++}", () => player.Handle().Teleport(e.transform.position, e.transform.rotation), "SelfTab.Teleport");
             });
         }
     }

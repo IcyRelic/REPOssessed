@@ -6,8 +6,6 @@ using REPOssessed.Cheats;
 using REPOssessed.Cheats.Core;
 using REPOssessed.Handler;
 using REPOssessed.Manager;
-using REPOssessed.Menu.Popup;
-using REPOssessed.Menu.Tab;
 using REPOssessed.Util;
 using System;
 using System.Collections.Generic;
