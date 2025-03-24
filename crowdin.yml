@@ -1,3 +1,3 @@
 files:
-  - source: '*/Resources/Languages/English.json'
-    translation: '*/Resources/Languages/%language%.son'
+  - source: REPOssessed/Resources/Languages/English.json
+    translation: REPOssessed/Resources/Languages/%language%.son
