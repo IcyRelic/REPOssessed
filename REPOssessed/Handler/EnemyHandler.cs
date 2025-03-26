@@ -1,6 +1,6 @@
-﻿using Photon.Realtime;
-using REPOssessed.Extensions;
+﻿using REPOssessed.Extensions;
 using REPOssessed.Util;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -8,16 +8,15 @@ namespace REPOssessed.Handler
 {
     public class EnemyHandler
     {
-        private Enemy enemy;
-        public EnemyHealth enemyHealth;
-        public EnemyParent enemyParent;
+        private Enemy enemy = null;
+        public EnemyHealth enemyHealth = null;
+        public EnemyParent enemyParent = null;
 
         public EnemyHandler(Enemy enemy)
         {
-            if (enemy == null) return; 
             this.enemy = enemy;
-            enemyHealth = enemy.gameObject.GetComponentHierarchy<EnemyHealth>();
-            enemyParent = enemy.gameObject.GetComponentHierarchy<EnemyParent>();
+            this.enemyHealth = enemy.GetComponentHierarchy<EnemyHealth>();
+            this.enemyParent = enemy.GetComponentHierarchy<EnemyParent>();
         }
 
         public void Heal(int heal)
@@ -40,8 +39,8 @@ namespace REPOssessed.Handler
             if (player == null) return;
             enemy.SetChaseTarget(player);
         }
-
-        public bool IsDisabled() => enemyParent == null || enemyParent.EnableObject == null || !enemyParent.EnableObject.activeSelf || !(enemyParent.Reflect()?.GetValue<bool>("Spawned") ?? false);
+        public void Teleport(Vector3 position) => enemy.EnemyTeleported(position);
+        public bool IsDisabled() => (!enemyParent?.EnableObject?.activeSelf ?? false) || (!enemyParent.Reflect()?.GetValue<bool>("Spawned") ?? false);
         public bool IsDead() => enemyHealth != null && enemyHealth.Reflect().GetValue<bool>("dead");
         public string GetName() => enemyParent != null ? enemyParent.enemyName : "Unknown";
         public int GetHealth() => enemyHealth != null ? enemyHealth.Reflect().GetValue<int>("healthCurrent") : 0;
@@ -51,7 +50,23 @@ namespace REPOssessed.Handler
 
     public static class EnemyExtensions
     {
-        public static EnemyHandler Handle(this Enemy enemy) => new EnemyHandler(enemy);
+        public static Dictionary<Enemy, EnemyHandler> EnemyHandlers = new Dictionary<Enemy, EnemyHandler>();
+
+        public static EnemyHandler Handle(this Enemy enemy)
+        {
+            if (enemy == null)
+            {
+                if (EnemyHandlers.ContainsKey(enemy)) EnemyHandlers.Remove(enemy);
+                return null;
+            }
+            if (!EnemyHandlers.TryGetValue(enemy, out var handler))
+            {
+                handler = new EnemyHandler(enemy);
+                EnemyHandlers[enemy] = handler;
+            }
+            return handler;
+        }
+
         public static string GetName(this EnemySetup enemy) => enemy.spawnObjects.Select(o => o?.GetComponentHierarchy<EnemyParent>()).FirstOrDefault(e => e != null).enemyName;
     }
 }

@@ -68,6 +68,7 @@ namespace REPOssessed.Menu.Tab
             UI.Button("PlayersTab.Crown", () => PunManager.instance.CrownPlayerSync(selectedPlayer.Handle().GetSteamID()));
             UI.Button("PlayersTab.Kill", () => selectedPlayer.PlayerDeath(-1));
             UI.Button("PlayersTab.Revive", () => selectedPlayer.Handle().RevivePlayer());
+            UI.Button("PlayersTab.ForceTumble", () => selectedPlayer.Handle().ForceTumble());
             UI.TextboxAction("PlayersTab.Heal", ref heal, 3, new UIButton("General.Set", () => selectedPlayer.Handle().Heal(heal)));
             UI.TextboxAction("PlayersTab.Damage", ref damage, 3, new UIButton("General.Set", () => selectedPlayer.Handle().Hurt(damage)));
             UI.Button("PlayersTab.BreakHeldItem", () =>
@@ -76,10 +77,16 @@ namespace REPOssessed.Menu.Tab
             });
             UI.TextboxAction("PlayersTab.ChatMessage", ref message, 100, new UIButton("PlayersTab.Send", () => selectedPlayer.ChatMessageSend(message, false)));
             UI.TextboxAction("PlayersTab.ChangeColor", ref color, 2, new UIButton("General.Set", () => selectedPlayer.PlayerAvatarSetColor(color)));
-            UI.Button("PlayersTab.LureAllEnemies", () => GameObjectManager.enemies.Where(e => e != null && e.Handle() != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()).ToList().ForEach(e => e.Handle().Lure(selectedPlayer)));
             if (!selectedPlayer.Handle().IsLocalPlayer())
             {
-                UI.Button("PlayersTab.TeleportToPlayer", () => PlayerAvatar.instance.GetLocalPlayer().Handle().Teleport(selectedPlayer.playerTransform.position, selectedPlayer.playerTransform.rotation), "SelfTab.Teleport");
+                UI.Button("PlayersTab.TeleportToPlayer", () =>
+                {
+                    if (selectedPlayer != null && selectedPlayer.transform != null) PlayerAvatar.instance.GetLocalPlayer().Handle().Teleport(selectedPlayer.transform.position, selectedPlayer.transform.rotation);
+                }, "SelfTab.Teleport");
+                UI.Button("PlayersTab.TeleportPlayerToYou", () =>
+                {
+                    if (selectedPlayer != null && selectedPlayer.transform != null) selectedPlayer.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation);
+                }, "SelfTab.Teleport");
                 UI.Button("PlayersTab.BlockRPCs", () => selectedPlayer.Handle().ToggleRPCBlock(), selectedPlayer.Handle().IsRPCBlocked() ? "PlayersTab.Unblock" : "PlayersTab.Block");
             }
         }
@@ -95,9 +102,9 @@ namespace REPOssessed.Menu.Tab
             foreach (PlayerAvatar player in GameObjectManager.players.Where(p => p != null))
             {
                 if (selectedPlayer == null) selectedPlayer = player;
-                if (player.Handle().IsREPOssessedUser()) GUI.contentColor = Settings.c_primary.GetColor();
                 if (selectedPlayer.GetInstanceID() == player.GetInstanceID()) GUI.contentColor = Settings.c_success.GetColor();
-                if (GUILayout.Button(player.Handle().GetName(), GUI.skin.label)) selectedPlayer = player;
+                string name = selectedPlayer.Handle().IsREPOssessedUser() ? $"[REPOssessed] {player.Handle().GetName()}" : player.Handle().GetName();
+                if (GUILayout.Button(name, GUI.skin.label)) selectedPlayer = player;
                 GUI.contentColor = Settings.c_menuText.GetColor();
             }
             GUILayout.EndVertical();

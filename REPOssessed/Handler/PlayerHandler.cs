@@ -1,6 +1,7 @@
 ﻿using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
+using REPOssessed.Cheats;
 using REPOssessed.Cheats.Components;
 using REPOssessed.Manager;
 using REPOssessed.Util;
@@ -25,10 +26,9 @@ namespace REPOssessed.Handler
 
         public PlayerHandler(PlayerAvatar player)
         {
-            if (player == null) return;
             this.player = player;
-            playerVoiceChat = player?.Reflect().GetValue<PlayerVoiceChat>("voiceChat") ?? null;
-            physGrabObject = player.physGrabber?.Reflect()?.GetValue<PhysGrabObject>("grabbedPhysGrabObject") ?? null;
+            this.playerVoiceChat = player?.Reflect()?.GetValue<PlayerVoiceChat>("voiceChat") ?? null;
+            this.physGrabObject = player.physGrabber?.Reflect()?.GetValue<PhysGrabObject>("grabbedPhysGrabObject") ?? null;
         }
 
         public static void ClearRPCHistory() => rpcHistory.Clear();
@@ -60,8 +60,7 @@ namespace REPOssessed.Handler
 
         public Queue<RPCData> GetRPCHistory()
         {
-            if (!rpcHistory.ContainsKey(steamId))
-                rpcHistory.Add(steamId, new Queue<RPCData>());
+            if (!rpcHistory.ContainsKey(steamId)) rpcHistory.Add(steamId, new Queue<RPCData>());
             return rpcHistory[steamId];
         }
         public List<RPCData> GetRPCHistory(string rpc) => GetRPCHistory().ToList().FindAll(r => r.rpc.StartsWith(rpc));
@@ -147,16 +146,13 @@ namespace REPOssessed.Handler
         public int GetHealth() => player.playerHealth?.Reflect().GetValue<int>("health") ?? 0;
         public int GetMaxHealth() => player.playerHealth?.Reflect().GetValue<int>("maxHealth") ?? 0;
         public bool IsDead() => player.Reflect().GetValue<bool>("deadSet");
-        public bool IsCrowned() => SessionManager.instance != null && SessionManager.instance.Reflect().GetValue<string>("crownedPlayerSteamID") == GetSteamID(); 
+        public bool IsCrowned() => SessionManager.instance != null && SessionManager.instance.Reflect().GetValue<string>("crownedPlayerSteamID") == GetSteamID();
         public void RevivePlayer()
         {
-            if (player.Handle().IsDead()) player.Revive();
+            if (IsDead()) player.Revive();
         }
-        public bool IsMasterClient()
-        {
-            if (player.Handle().IsLocalPlayer()) return SemiFunc.IsMasterClientOrSingleplayer();
-            return photonPlayer.IsMasterClient;
-        }
+        public void ForceTumble() => player.tumble?.TumbleSet(true, false);
+        public bool IsMasterClient() => IsLocalPlayer() ? SemiFunc.IsMasterClientOrSingleplayer() : photonPlayer.IsMasterClient;
         public void Heal(int amount)
         {
             player.playerHealth.Reflect().SetValue("health", amount);
@@ -175,15 +171,40 @@ namespace REPOssessed.Handler
             StatsManager.instance.SetPlayerHealth(player.Handle().GetSteamID(), GetHealth(), false);
             if (GameManager.Multiplayer()) player.photonView.RPC("UpdateHealthRPC", RpcTarget.Others, GetHealth(), GetMaxHealth(), true);
         }
-        public void Teleport(Vector3 position, Quaternion rotation) => player.Reflect().Invoke("SpawnRPC", position, rotation);
+        public void Teleport(Vector3 position, Quaternion rotation)
+        {
+            if (!SemiFunc.IsMultiplayer())
+            {
+                player.Reflect().Invoke("SpawnRPC", position, rotation);
+                return;
+            }
+            player.photonView.RPC("SpawnRPC", RpcTarget.All, position, rotation);
+        }
         public bool IsTalking() => playerVoiceChat?.Reflect().GetValue<bool>("isTalking") ?? false;
         public string GetName() => player.Reflect().GetValue<string>("playerName");
     }
 
     public static class PlayerExtensions
     {
+        public static Dictionary<PlayerAvatar, PlayerHandler> PlayerHandlers = new Dictionary<PlayerAvatar, PlayerHandler>();
+
+        public static PlayerHandler Handle(this PlayerAvatar player)
+        {
+            if (player == null)
+            {
+                if (PlayerHandlers.ContainsKey(player)) PlayerHandlers.Remove(player);
+                return null;
+            }
+            if (!PlayerHandlers.TryGetValue(player, out var handler))
+            {
+                handler = new PlayerHandler(player);
+                PlayerHandlers[player] = handler;
+            }
+            return handler;
+        }
+
         private static PlayerAvatar localPlayer;
-        public static PlayerHandler Handle(this PlayerAvatar player) => new PlayerHandler(player);
+
         public static PlayerAvatar GetLocalPlayer(this PlayerAvatar player)
         {
             if (localPlayer == null)

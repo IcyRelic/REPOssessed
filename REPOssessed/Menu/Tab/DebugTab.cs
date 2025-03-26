@@ -1,5 +1,6 @@
 ﻿using Photon.Pun;
 using REPOssessed.Extensions;
+using REPOssessed.Handler;
 using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
@@ -17,7 +18,7 @@ namespace REPOssessed.Menu.Tab
         {
             GUILayout.BeginVertical();
             MenuContent();
-            GUILayout.EndVertical();         
+            GUILayout.EndVertical();
         }
 
         private void MenuContent()

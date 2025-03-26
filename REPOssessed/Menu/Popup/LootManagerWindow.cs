@@ -2,9 +2,11 @@
 using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
-using System;
+using Steamworks.Ugc;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace REPOssessed.Menu.Popup
 {
@@ -23,23 +25,41 @@ namespace REPOssessed.Menu.Popup
                 GUI.DragWindow();
                 return;
             }
-
+            List<GroupedPhysGrabObject> groupedPhysGrabObject = GameObjectManager.items?.Where(i => i != null && i.Handle()?.IsValuable() == true || i.Handle()?.IsShopItem() == true).GroupBy(i => i.Handle()?.GetName()).Select(g => new GroupedPhysGrabObject { physGrabObject = g.FirstOrDefault(), Count = g.Count() }).ToList() ?? new List<GroupedPhysGrabObject>();
+            if (groupedPhysGrabObject == null) groupedPhysGrabObject = new List<GroupedPhysGrabObject>();
             UI.VerticalSpace(ref scrollPos, () =>
             {
                 GUILayout.BeginHorizontal();
                 UI.Textbox("General.Search", ref s_search);
-                UI.Button("LootManager.TeleportAllItems", () => TeleportAll());
+                UI.Button("LootManager.TeleportAllItems", () => TeleportAll(groupedPhysGrabObject));
                 GUILayout.EndHorizontal();
                 GUILayout.Space(20);
-                UI.ButtonGrid(GameObjectManager.items.Where(i => i != null && i.Handle() != null && (!i.Handle().IsCart() && i.Handle().IsValuable() || i.Handle().IsShopItem())).GroupBy(i => i.Handle().GetName(), StringComparer.OrdinalIgnoreCase).Select(g => new { Item = g.FirstOrDefault(), Count = g.Count() }).OrderBy(x => x.Item?.Handle().GetName(), StringComparer.OrdinalIgnoreCase).ToList(), x => $"{x.Item?.Handle().GetName()} {x.Count}x", s_search, x => x.Item?.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation), 3);
+                UI.ButtonGrid(groupedPhysGrabObject, p => $"{p?.physGrabObject?.Handle()?.GetName()} {p.Count}x", s_search, p =>
+                {
+                    List<GroupedPhysGrabObject> items = groupedPhysGrabObject.Where(gp => gp == p).ToList();
+                    Teleport(items[Random.Range(0, items.Count)]);
+                }, 3);
+                
             });
             GUI.DragWindow();
         }
 
-        public static void TeleportAll()
+        public static void TeleportAll(List<GroupedPhysGrabObject> groupedPhysGrabObject)
         {
             if (SemiFunc.MainCamera() == null || SemiFunc.MainCamera().transform == null) return;
-            GameObjectManager.items.Where(i => i != null && i.Handle() != null && i.Handle().IsValuable() || i.Handle().IsShopItem()).ToList().ForEach(i => i.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation));
+            groupedPhysGrabObject.Where(i => i != null && i.physGrabObject != null).ToList().ForEach(i => Teleport(i));
+        }
+
+        private static void Teleport(GroupedPhysGrabObject groupedPhysGrabObject)
+        {
+            if (SemiFunc.MainCamera() == null || SemiFunc.MainCamera().transform == null || groupedPhysGrabObject == null || groupedPhysGrabObject.physGrabObject == null || groupedPhysGrabObject.physGrabObject.Handle() == null) return;
+            groupedPhysGrabObject.physGrabObject.Handle().Teleport(SemiFunc.MainCamera().transform.position, SemiFunc.MainCamera().transform.rotation);
+        }
+
+        public class GroupedPhysGrabObject
+        {
+            public PhysGrabObject physGrabObject { get; set; }
+            public int Count { get; set; }
         }
     }
 }

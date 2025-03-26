@@ -23,14 +23,42 @@ namespace REPOssessed.Extensions
             { typeof(long), new TryParseDelegate<long>(long.TryParse) },
         };
 
-        public static T GetComponentHierarchy<T>(this GameObject obj) where T : Component
+        public static T GetComponentHierarchy<T>(this Component component) 
         {
-            T component = obj.GetComponent<T>();
+            T _component = component.GetComponent<T>();
+            if (_component != null) return _component;
+            _component = component.GetComponentInChildren<T>();
+            if (_component != null) return _component;
+            _component = component.GetComponentInParent<T>();
+            return _component;
+        }
+
+        public static List<T> GetComponentsHierarchy<T>(this Component component)
+        {
+            List<T> components = new List<T>();
+            components.Add(component.GetComponent<T>());
+            components.Add(component.GetComponentInChildren<T>());
+            components.Add(component.GetComponentInParent<T>());
+            return components;
+        }
+
+        public static T GetComponentHierarchy<T>(this GameObject gameObject)
+        {
+            T component = gameObject.GetComponent<T>();
             if (component != null) return component;
-            component = obj.GetComponentInChildren<T>(true);
+            component = gameObject.GetComponentInChildren<T>();
             if (component != null) return component;
-            component = obj.GetComponentInParent<T>();
+            component = gameObject.GetComponentInParent<T>();
             return component;
+        }
+
+        public static List<T> GetComponentsHierarchy<T>(this GameObject gameObject)
+        {
+            List<T> components = new List<T>();
+            components.Add(gameObject.GetComponent<T>());
+            components.Add(gameObject.GetComponentInChildren<T>());
+            components.Add(gameObject.GetComponentInParent<T>());
+            return components;
         }
 
         public static void CompleteExtraction(this ExtractionPoint extraction)

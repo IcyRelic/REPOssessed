@@ -37,8 +37,13 @@ namespace REPOssessed.Menu.Tab
             UI.VerticalSpace(ref scrollPos, () =>
             {
                 UI.Header("ServerTab.ServerCheats");
-                UI.TextboxAction("ServerTab.SetCurrency", ref currency, 5, new UIButton("General.Set", () => Cheat.Instance<SetCurrency>()._SetCurrency(currency)));
+                UI.TextboxAction("ServerTab.SetCurrency", ref currency, 5, new UIButton("General.Set", () =>
+                {
+                    SetCurrency.Currency = currency / 1000;
+                    Cheat.Instance<SetCurrency>().Execute();
+                }));
                 UI.Button("ServerTab.BreakAllObjects", () => GameObjectManager.items.Where(i => i != null && i.Handle() != null).ToList().ForEach(i => i.Handle().Break()));
+                UI.Button(["ServerTab.ForceThiefPunishment", "General.HostTag"], () => Cheat.Instance<ForceThiefPunishment>().Execute());
 
             }, GUILayout.Width(HackMenu.Instance.contentWidth * 0.5f - HackMenu.Instance.spaceFromLeft));
         }

@@ -63,11 +63,11 @@ namespace REPOssessed.Menu.Tab
             {
                 case 0:
                     if (!GameObjectManager.enemies.Exists(e => e.GetInstanceID() == selectedEnemy)) selectedEnemy = -1;
-                    DrawList<Enemy>("EnemyTab.EnemyList", GameObjectManager.enemies.Where(e => !e.Handle().IsDead() && !e.Handle().IsDisabled()).OrderBy(e => e.Handle().GetName()).ToList(), e => e.Handle().GetName(), ref scrollPos2, ref selectedEnemy);
+                    DrawList<Enemy>("EnemyTab.EnemyList", GameObjectManager.enemies.Where(e => e != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()).OrderBy(e => e.Handle().GetName()).ToList(), e => e.Handle().GetName(), ref scrollPos2, ref selectedEnemy);
                     break;
                 case 1:
                     if (!GetEnemies().Exists(e => e.GetInstanceID() == selectedEnemySetup)) selectedEnemySetup = -1;
-                    DrawList<EnemySetup>("EnemyTab.EnemyType", GetEnemies().OrderBy(e => e.GetName()).ToList(), e => e.GetName(), ref scrollPos3, ref selectedEnemySetup);
+                    DrawList<EnemySetup>("EnemyTab.EnemyType", GetEnemies().Where(e => e != null).OrderBy(e => e.GetName()).ToList(), e => e.GetName(), ref scrollPos3, ref selectedEnemySetup);
                    break;
             }
         }
@@ -107,33 +107,43 @@ namespace REPOssessed.Menu.Tab
 
             UI.Header("EnemyTab.GeneralActions");
 
-            UI.Button("EnemyTab.KillAll", () => GameObjectManager.enemies.Where(e => e != null && !e.Handle().IsDead()).ToList().ForEach(e => e.Handle().Kill()));
-            UI.Button("EnemyTab.LureAll", () => GameObjectManager.enemies.Where(e => e != null && !e.Handle().IsDead()).ToList().ForEach(e => e.Handle().Lure(selectedPlayer)));
-
+            UI.Button("EnemyTab.KillAll", () => GameObjectManager.enemies.Where(e => e != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()).ToList().ForEach(e => e.Handle().Kill()));
+            UI.Button("EnemyTab.TeleportAllEnemies", () => GameObjectManager.enemies.Where(e => e != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()).ToList().ForEach(e =>
+            {
+                if (selectedPlayer != null && selectedPlayer.transform != null) e.Handle().Teleport(selectedPlayer.transform.position);
+            }));
+            UI.Button("EnemyTab.LureAll", () => GameObjectManager.enemies.Where(e => e != null && !e.Handle().IsDead() && !e.Handle().IsDisabled()).ToList().ForEach(e =>
+            {
+                if (selectedPlayer != null) e.Handle().Lure(selectedPlayer);
+            }));
             UI.Label("EnemyTab.SelectedPlayer", s_target);
         }
 
         private void EnemyActions()
         {
             Enemy enemy = GetSelectedEnemy();
-            if (enemy == null || enemy.Handle() == null || enemy.Handle().IsDead() || enemy.Handle().enemyHealth == null || enemy.transform == null)
-            {
-                enemy = null;
-                return;
-            }
+            if (enemy == null || enemy.Handle() == null || enemy.Handle().IsDead() || enemy.transform == null) return;
 
             string enemyTarget = enemy.Handle().GetEnemyTarget() == null ? "General.None".Localize() : enemy.Handle().GetEnemyTarget().Handle().GetName();
 
             UI.Header("EnemyTab.EnemyActions");
-
             UI.Label("EnemyTab.Health", enemy.Handle().GetHealth().ToString());
             UI.Label("EnemyTab.MaxHealth", enemy.Handle().GetMaxHealth().ToString());
             UI.Label("EnemyTab.EnemyTarget", enemyTarget);
-
             UI.Button("EnemyTab.Kill", () => enemy.Handle().Kill());
-            UI.Button("EnemyTab.Lure", () => enemy.Handle().Lure(selectedPlayer));
+            UI.Button("EnemyTab.Lure", () =>
+            {
+                if (selectedPlayer != null) enemy.Handle().Lure(selectedPlayer);
+            });
             UI.Button("EnemyTab.TeleportToEnemy", () => PlayerAvatar.instance.GetLocalPlayer().Handle().Teleport(enemy.transform.position, enemy.transform.rotation));
-
+            UI.Button("EnemyTab.TeleportEnemyToPlayer", () =>
+            {
+                if (selectedPlayer != null && selectedPlayer.transform != null) enemy.Handle().Teleport(selectedPlayer.transform.position);
+            });
+            UI.Button("EnemyTab.TeleportPlayerToEnemy", () =>
+            {
+                if (selectedPlayer != null && selectedPlayer.Handle() != null) selectedPlayer.Handle().Teleport(enemy.transform.position, enemy.transform.rotation);
+            });
             UI.TextboxAction("EnemyTab.Damage", ref damage, 3, new UIButton("General.Set", () => enemy.Handle().Hurt(damage)));
             UI.TextboxAction("EnemyTab.Heal", ref heal, 3, new UIButton("General.Set", () => enemy.Handle().Heal(heal)));
             UI.TextboxAction("EnemyTab.Freeze", ref freeze, 3, new UIButton("General.Set", () => enemy.Freeze(freeze)));

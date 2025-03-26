@@ -34,7 +34,7 @@ namespace REPOssessed.Menu.Tab
                 UI.Checkbox("SelfTab.NoTumble", Cheat.Instance<NoTumble>());
                 UI.Checkbox("SelfTab.InfiniteJump", Cheat.Instance<InfiniteJump>());
                 UI.Checkbox("SelfTab.Invisibility", Cheat.Instance<Invisibility>());
-                UI.Checkbox("SelfTab.UnlimitedBattery", Cheat.Instance<UnlimitedBattery>());
+                UI.Checkbox(["SelfTab.UnlimitedBattery", "General.HostTag"], Cheat.Instance<UnlimitedBattery>());
                 UI.Checkbox(["SelfTab.NonEnemyTargetable", "General.HostTag"], Cheat.Instance<NonEnemyTargetable>());
                 UI.Checkbox("SelfTab.AlwaysShowLevel", Cheat.Instance<AlwaysShowLevel>());
                 UI.CheatToggleSlider(Cheat.Instance<RainbowSuit>(), "SelfTab.RainbowSuit", RainbowSuit.Value.ToString("F1"), ref RainbowSuit.Value, 0.1f, 1f);

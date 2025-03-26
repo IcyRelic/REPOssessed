@@ -127,7 +127,13 @@ namespace REPOssessed
         }
 
         [HarmonyPatch(typeof(MenuPageEsc), "ButtonEventQuitToMenu"), HarmonyPrefix]
-        public static void ButtonEventQuitToMenu() => GameObjectManager.ClearObjects();
+        public static void ButtonEventQuitToMenu()
+        {
+            GameObjectManager.ClearObjects();
+            ObjectExtensions.ObjectHandlers?.Clear();
+            PlayerExtensions.PlayerHandlers?.Clear();
+            EnemyExtensions.EnemyHandlers?.Clear();
+        }
 
         [HarmonyPatch(typeof(MenuPageLobby), "PlayerAdd"), HarmonyPostfix]
         public static void PlayerAdd()
@@ -135,6 +141,9 @@ namespace REPOssessed
             if (!SemiFunc.RunIsLobbyMenu()) return;
             REPOssessed.Instance.AlertUsingREPOssessed();
         }
+
+        [HarmonyPatch(typeof(NetworkManager), "AllPlayerSpawnedRPC"), HarmonyPostfix]
+        public static void AllPlayerSpawnedRPC() => REPOssessed.Instance.AlertUsingREPOssessed();
 
         public static Dictionary<PhysGrabObject, PlayerAvatar> LastGrabbedPhysObjects = new Dictionary<PhysGrabObject, PlayerAvatar>();
 

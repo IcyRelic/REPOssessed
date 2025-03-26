@@ -17,11 +17,5 @@ namespace REPOssessed.Cheats
             }
             else StatsManager.instance.runStats["currency"] = Currency;
         }
-
-        public void _SetCurrency(int currency)
-        {
-            Currency = currency / 1000;
-            Execute();
-        }
     }
 }
