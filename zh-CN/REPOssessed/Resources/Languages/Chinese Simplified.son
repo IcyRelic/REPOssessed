@@ -150,6 +150,8 @@
   "FirstSetupManager.Keybind": "Current:",
   "LootManager.Title": "Loot Manager",
   "LootManager.TeleportAllItems": "Teleport All Items",
+  "LootManager.IgnoreExtractionItems": "Ignore Extraction Items",
+  "LootManager.IgnoreCartsItems": "Ignore Carts Items",
   "ItemManager.Title": "Item Manager",
   "ItemManager.Amount": "Amount:",
   "LevelManager.Title": "Level Manager",
