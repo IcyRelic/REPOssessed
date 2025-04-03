@@ -145,6 +145,7 @@
   "EnemyTab.Health": "Health:",
   "EnemyTab.MaxHealth": "Max Health:",
   "EnemyTab.EnemyTarget": "Enemy Target",
+  "EnemyTab.PermaKill": "Perma Kill",
   "ServerTab.Title": "Server",
   "ServerTab.Managers": "Managers",
   "ServerTab.ServerCheats": "Server Cheats",
