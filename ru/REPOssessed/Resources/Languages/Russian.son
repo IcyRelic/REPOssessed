@@ -145,6 +145,7 @@
   "EnemyTab.Health": "Здоровье:",
   "EnemyTab.MaxHealth": "Макс. здоровье:",
   "EnemyTab.EnemyTarget": "Цель монстра",
+  "EnemyTab.PermaKill": "Perma Kill",
   "ServerTab.Title": "Сервер",
   "ServerTab.Managers": "Редакторы",
   "ServerTab.ServerCheats": "Серверные читы",
