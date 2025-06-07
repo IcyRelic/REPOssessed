@@ -151,6 +151,7 @@
   "EnemyTab.EnemyTarget": "Цель монстра",
   "EnemyTab.PermaKill": "Perma Kill",
   "EnemyTab.PermaKillAll": "Perma Kill All",
+  "EnemyTab.TeleportPlayerToEnemy": "Teleport Player To Enemy",
   "ServerTab.Title": "Сервер",
   "ServerTab.Managers": "Редакторы",
   "ServerTab.ServerCheats": "Серверные читы",
