@@ -1,6 +1,12 @@
 {
   "Changelog": {
     "1.0.2": {
+      "DevMessage": [
+        {
+          "Name": "Broken features and bugs",
+          "Description": "I don't have time to test and update all the features after this update but if find any please report them."
+        }
+      ],
       "Added": [
       ],
       "Changed": [
