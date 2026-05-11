@@ -1,6 +1,4 @@
 ﻿using Photon.Pun;
-using REPOssessed.Handler;
-using REPOssessed.Manager;
 using REPOssessed.Menu.Core;
 using REPOssessed.Util;
 using System.Collections.Generic;
@@ -49,7 +47,7 @@ namespace REPOssessed.Menu.Popup
                     RunManager.instance.levelCurrent = newLevel;
                     if (GameManager.Multiplayer()) RunManager.instance.Reflect()?.GetValue<RunManagerPUN>("runManagerPUN").Reflect().GetValue<PhotonView>("photonView")?.RPC("UpdateLevelRPC", RpcTarget.OthersBuffered, newLevel.name, RunManager.instance.levelsCompleted, false);
                     else RunManager.instance.UpdateLevel(newLevel.name, RunManager.instance.levelsCompleted, false);
-                    if (newLevel == RunManager.instance.levelShop) RunManager.instance.Reflect().SetValue("saveLevel", 1);
+                    if (RunManager.instance.levelShop.Any(ls => newLevel)) RunManager.instance.Reflect().SetValue("saveLevel", 1);
                     else RunManager.instance.Reflect().SetValue("saveLevel", 0);
                     SemiFunc.StatSetSaveLevel(RunManager.instance.Reflect().GetValue<int>("saveLevel"));
                     RunManager.instance.RestartScene();

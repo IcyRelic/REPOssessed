@@ -1,4 +1,5 @@
 ﻿using REPOssessed.Cheats.Core;
+using REPOssessed.Handler;
 using REPOssessed.Manager;
 using System.Collections;
 using UnityEngine;
@@ -24,18 +25,15 @@ namespace REPOssessed.Cheats.SelfTab
 
         private IEnumerator RainbowSuitCoroutine()
         {
-            int colors = AssetManager.instance.playerColors.Count;
-            int index = 0;
-            while (true) 
+            int colorIndex = 0;
+            while (true)
             {
-                PlayerAvatar? localPlayer = GameObjectManager.LocalPlayer;
-                if (localPlayer == null)
+                PlayerHandler? localPlayerHandler = GameObjectManager.LocalPlayer?.Handle();
+                if (localPlayerHandler != null) 
                 {
-                    yield return new WaitForSeconds(1f); 
-                    continue; 
+                    colorIndex = (colorIndex + 1) % MetaManager.instance.colors.Count;
+                    localPlayerHandler.SetColor(colorIndex);
                 }
-                localPlayer.PlayerAvatarSetColor(index);
-                index = (index + 1) % colors;
                 yield return new WaitForSeconds(Value);
             }
         }

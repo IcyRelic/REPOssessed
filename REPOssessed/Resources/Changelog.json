@@ -1,5 +1,21 @@
 {
   "Changelog": {
+    "1.0.2": {
+      "Added": [
+      ],
+      "Changed": [
+
+      ],
+      "Fixed": [
+        {
+          "Name": "for v0.4.0 update",
+          "Description": "The game updated and moved some parts of the code causing the menu to break"
+        }
+      ],
+      "Removed": [
+
+      ]
+    },
     "1.0.1": {
       "DevMessage": [
         {

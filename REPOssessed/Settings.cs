@@ -19,7 +19,7 @@ namespace REPOssessed
         /* *    
          * Menu Settings
          * */
-        public static string s_Version = "v1.0.1";
+        public static string s_Version = "v1.0.2";
         public static string Language = "English";
         public static bool b_IsFirstLaunch = true;
 

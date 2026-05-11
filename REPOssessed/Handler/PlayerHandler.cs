@@ -20,6 +20,8 @@ namespace REPOssessed.Handler
         public PhotonView? photonView;
         public Player? photonPlayer;
         public Rigidbody? rigidbody;
+        public PlayerTumble? tumble;
+        public PlayerCosmetics cosmetics;
         private PlayerDeathHead? playerDeathHead;
 
         public PlayerHandler(PlayerAvatar player)
@@ -27,8 +29,10 @@ namespace REPOssessed.Handler
             this.player = player;
             this.photonView = player.photonView;
             this.photonPlayer = photonView?.Owner;
-            this.playerDeathHead = player.playerDeathHead;
-            this.rigidbody = player.tumble?.Reflect().GetValue<Rigidbody>("rb");
+            this.playerDeathHead = player.Reflect().GetValue<PlayerDeathHead>("playerDeathHead");
+            tumble = player.Reflect()?.GetValue<PlayerTumble>("tumble");
+            this.rigidbody = tumble?.Reflect().GetValue<Rigidbody>("rb");
+            this.cosmetics = player.playerCosmetics;
         }
 
         public static void ClearRPCHistory() => rpcHistory.Clear();
@@ -142,7 +146,7 @@ namespace REPOssessed.Handler
             if (!GameUtil.IsMasterClient() || !IsDead()) return;
             player.Revive();
         }
-        public void ForceTumble() => player.tumble?.TumbleRequest(true, false); 
+        public void ForceTumble() => tumble?.TumbleRequest(true, false); 
         public bool IsMasterClient() => IsLocalPlayer() ? SemiFunc.IsMasterClientOrSingleplayer() : photonPlayer?.IsMasterClient ?? false;
         public void Heal(int amount) => player.playerHealth?.HealOther(amount, false);
         public void Hurt(int amount)
@@ -182,6 +186,12 @@ namespace REPOssessed.Handler
         {
             if (!GameUtil.IsMasterClient() && !IsLocalPlayer()) return;
             player.ChatMessageSend(message);
+        }
+        public void SetColor(int colorIndex)
+        {
+            if (!IsLocalPlayer()) return;
+            if (GameManager.Multiplayer()) cosmetics.Reflect()?.GetValue<PhotonView>("photonView")?.RPC("SetupColorsAllRPC", RpcTarget.All, colorIndex);
+            else cosmetics.Reflect().Invoke("SetupColorsAllLogic", colorIndex);
         }
         public bool IsTalking() => GetPlayerVoiceChat()?.Reflect().GetValue<bool>("isTalking") ?? false;
         public string GetName() => player.Reflect()?.GetValue<string>("playerName") ?? "Unknown";

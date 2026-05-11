@@ -15,10 +15,10 @@ namespace REPOssessed.Util
             if (runManager != null)
             {
                 levels.AddRange(RunManager.instance.levels);
-                levels.Add(RunManager.instance.levelShop);
+                levels.AddRange(RunManager.instance.levelShop);
                 levels.Add(RunManager.instance.levelTutorial);
                 levels.Add(RunManager.instance.levelRecording);
-                levels.Add(RunManager.instance.levelArena);
+                levels.AddRange(RunManager.instance.levelArena);
                 levels.Add(RunManager.instance.levelLobby);
                 levels.Add(RunManager.instance.levelLobbyMenu);
             }
